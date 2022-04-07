@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-black flex flex-row w-screen h-screen">
+  <div class="bg-black flex flex-row w-screen h-screen ">
     <HomeBar />
     <HomeContainer />
   </div>  
