@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <!-- <NuxtWelcome /> -->
+  <NuxtLayout name="custom" class="bg-black flex flex-col w-screen h-screen ">
     <NuxtPage />
-  </div>
+  </NuxtLayout>  
 </template>
