@@ -10,7 +10,7 @@
         <div id="folderDisplay" class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12"> 
             <div v-for="f in folders" v-show="!folder_focus || f.clicked" :key="f.id" class="h-80 w-auto z-10 hover:cursor-pointer" @click="onClick(f)">
                 <h2 class="break-normal text-white text-center uppercase text-xl absolute w-80">{{f.title}}</h2>
-                <div :id="`scene${f.id}`" @mouseover="hover(f)" class="w-80 h-80"/>
+                <div v-if="f.constructor.name === 'Folder'" :id="`scene${f.id}`" @mouseover="hover(f)" class="w-80 h-80"/>
             </div>
         </div>
 
@@ -43,6 +43,9 @@
 </template>
 
 <script>
+// Import axios
+import axios from 'axios'
+let url = 'https://pixabay.com/api/?key=5832566-81dc7429a63c86e3b707d0429&q={SEARCH}&per_page=25&page=1'
 // Three js init 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -64,9 +67,19 @@ class Folder {
         this.folders = [] // tab ID of childs folders 
         this.images = [] // tab ID of childs images
         this.cover = [] // tab of images covering the folder
+        this.request = url.replace('{SEARCH}', title)
     }
 }
 
+class Image {
+    constructor(id, title) {
+        this.id = id
+        this.title = title
+        this.clicked = false
+        this.images = [] // tab ID of childs images
+        this.cover = [] // tab of images covering the folder
+    }
+}
 // Star class to three js load
 
 const amount = 250
@@ -138,12 +151,14 @@ class Star {
 // TEMPORARY DEF
 
 const FOLDERS = [
-    new Folder(1, 'folder 1', "azerty"),
-    new Folder(2, 'folder 2'),
-    new Folder(3, 'folder 3'),
-    new Folder(4, 'folder 4'),
-    new Folder(5, 'folder 5'),
-    new Folder(6, 'folder 6'),
+    new Folder(1, 'Yellow', "azerty"),
+    new Folder(2, 'Flower'),
+    new Folder(3, 'Cat'),
+    new Folder(4, 'Horse'),
+    new Folder(5, 'Car'),
+    new Folder(6, 'Paris'),
+    new Image(7, 'Yellow'),
+
 ]
 
 export default {
@@ -257,6 +272,10 @@ export default {
             const material = new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide } );
 
             FOLDERS.forEach(f => {
+                console.log(f)
+                if(f.constructor.name != 'Folder') {
+                    return
+                }
                 const scene = new THREE.Scene()
                 const sceneElement = document.getElementById( `scene${f.id}` );
                 scene.userData.element = sceneElement;
@@ -417,6 +436,8 @@ export default {
         },
         goto(f) {
             
+            // Fetch api with axios
+
             if(f != this.folder_focus) {
                 this.lockedModal = false
                 this.folder_focus = f.title=="Home"? null : f
@@ -437,12 +458,33 @@ export default {
             //adding bunch of stars
             const galaxyPoints = new THREE.Points(starsGeometry, StarsMaterial);
             scene.add(galaxyPoints);
+            
+            if(f.title!="Home") {
+                const url = f.request
+    
+                this.fetch_img(url).then(res => {
+                    
+                    console.log(res)
+                    document.getElementById("folderDisplay").style.display = "";
+                    scene.remove(galaxyPoints)
+                    POS_MAX = INITIAL_POS
+                })
+            }
 
-            setTimeout(() => {
-                document.getElementById("folderDisplay").style.display = "";
-                scene.remove(galaxyPoints)
-            }, 1000)
+            
+
         },
+        async fetch_img(url) {
+            const IMGS_TAB = []
+            for (let i = 1; i < 10; i++) {
+                await axios.get(url.replace('page=1',`page=${i}`)).then(res => {
+                    console.log(res.data)
+                    const imgs = res.data.hits.map(e => e.largeImageURL)
+                    IMGS_TAB.push(...imgs)
+                })
+            }
+            return IMGS_TAB
+        }
         
     },
     mounted() {
