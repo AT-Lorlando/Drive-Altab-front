@@ -7,10 +7,10 @@
             </button>
         </div>
         <!-- TODO: Sparkles -->
-        <div id="folderDisplay" class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12"> 
+        <div id="folderDisplay" class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12 bg-black"> 
             <div v-for="f in folders" v-show="!folder_focus || f.clicked" :key="f.id" class="h-80 w-auto z-10 hover:cursor-pointer" @click="onClick(f)">
                 <h2 class="break-normal text-white text-center uppercase text-xl absolute w-80">{{f.title}}</h2>
-                <div v-if="f.constructor.name === 'Folder'" :id="`scene${f.id}`" @mouseover="hover(f)" class="w-80 h-80"/>
+                <div :id="`scene${f.id}`" @mouseover="hover(f)" class="w-80 h-80"/>
             </div>
         </div>
 
@@ -45,7 +45,7 @@
 <script>
 // Import axios
 import axios from 'axios'
-let url = 'https://pixabay.com/api/?key=5832566-81dc7429a63c86e3b707d0429&q={SEARCH}&per_page=25&page=1'
+let url = 'https://pixabay.com/api/?key=5832566-81dc7429a63c86e3b707d0429&q={SEARCH}&per_page=10&page=1'
 // Three js init 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -72,12 +72,13 @@ class Folder {
 }
 
 class Image {
-    constructor(id, title) {
+    constructor(id, title, data) {
         this.id = id
         this.title = title
         this.clicked = false
         this.images = [] // tab ID of childs images
         this.cover = [] // tab of images covering the folder
+        this.url = data
     }
 }
 // Star class to three js load
@@ -89,6 +90,10 @@ const galaxyGeometryColors = [];
 const galaxyGeometrySizes = [];
 const starsGeometry = new THREE.BufferGeometry();
 const hue = 215/360
+let geometryCube
+let geometryPlane
+let texture
+let material
 let INITIAL_POS = -1
 // let POS_MAX = INITIAL_POS
 let POS_MAX = 1
@@ -253,8 +258,18 @@ export default {
             //     // text.visible = false;
             // });
 
+            
+
+            this.draw_Folders()
 
 
+            
+            
+            
+
+            this.animate()
+        },
+        draw_Folders() {
             // Plane position to form a cube
             const offset = 0.1
             const POS = [
@@ -267,16 +282,14 @@ export default {
 
             
 
-            const geometry = new THREE.PlaneGeometry( 1, 1 );
+            const geometryCube = new THREE.PlaneGeometry( 1, 1 );
+            const geometryPlane = new THREE.PlaneGeometry( 1.6, 1.6 );
             const texture = new THREE.TextureLoader().load( img );
             const material = new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide } );
 
-            FOLDERS.forEach(f => {
-                console.log(f)
-                if(f.constructor.name != 'Folder') {
-                    return
-                }
+            this.folders.forEach(f => {
                 const scene = new THREE.Scene()
+                console.log(`scene${f.id}`,document.getElementById( `scene${f.id}` ))
                 const sceneElement = document.getElementById( `scene${f.id}` );
                 scene.userData.element = sceneElement;
                 scene.userData.folder = f;
@@ -296,22 +309,33 @@ export default {
                 // controls.enableRotate = false;
                 // scene.userData.controls = controls;
 
-                // add 8 plane forming a cube
-                const cube = new THREE.Group()
-                
-
-                for ( let i = 0; i < 6; i ++ ) {
-                    const mesh = new THREE.Mesh( geometry, material );
-                    mesh.position.x = POS[i].x;
-                    mesh.position.y = POS[i].y;
-                    mesh.position.z = POS[i].z+0.5;
-
-                    mesh.rotation.x = POS[i].rx;
-                    mesh.rotation.y = POS[i].ry;
-                    mesh.rotation.z = POS[i].rz;
-                    cube.add( mesh );
+                console.log(f)
+                if(f.constructor.name === 'Folder') {
+                    // add 8 plane forming a cube
+                    const cube = new THREE.Group()
+                    
+    
+                    for ( let i = 0; i < 6; i ++ ) {
+                        const mesh = new THREE.Mesh( geometryCube, material );
+                        mesh.position.x = POS[i].x;
+                        mesh.position.y = POS[i].y;
+                        mesh.position.z = POS[i].z+0.5;
+    
+                        mesh.rotation.x = POS[i].rx;
+                        mesh.rotation.y = POS[i].ry;
+                        mesh.rotation.z = POS[i].rz;
+                        cube.add( mesh );
+                    }
+                    scene.add( cube );
+                } else {
+                    // Add a plane facing the camera
+                    const mesh = new THREE.Mesh( geometryPlane, material );
+                    mesh.position.x = 0;
+                    mesh.position.y = 0;
+                    mesh.position.z = 0;
+                    scene.add( mesh );
                 }
-                scene.add( cube );
+
 
                 // Add sparkles                
                 
@@ -330,9 +354,7 @@ export default {
 
                 console.log(scene)
 
-            })
-            
-            function onMouseMove( event, size, camera ) {
+                function onMouseMove( event, size, camera ) {
                 mouse.x = ( event.clientX - size.x ) /  (size.width) - 0.5;
                 mouse.y = ( event.clientY - size.y ) / (size.height) - 0.5;
                 
@@ -340,7 +362,7 @@ export default {
                     camera.position.y += ( - mouse.y*2- camera.position.y )*0.05 ;
                 }
 
-            this.animate()
+            })
         },
         animate() {
             requestAnimationFrame(this.animate)
@@ -393,7 +415,12 @@ export default {
                 scenes.forEach((s, index) => {
                     const element = s.userData.element;
                     // s.children[0].rotateOnAxis(new THREE.Vector3(0,1,0), 0.01);
-                    s.children[0].rotation.y = Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
+                    if(s.userData.folder.constructor.name === 'Folder') {
+                        s.children[0].rotation.y =  Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
+                    } else {
+                        s.children[0].rotation.y =  Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.5;
+                    }
+                    // s.children[0].rotation.y = Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
                     // s.children[0].rotation.y = -Math.cos(t) * Math.PI/2 * 0.75;
                     const camera = s.userData.camera;
                     const rect = element.getBoundingClientRect();   
@@ -455,20 +482,31 @@ export default {
             const scene = f.scene
             console.log(scene)
 
-            //adding bunch of stars
-            const galaxyPoints = new THREE.Points(starsGeometry, StarsMaterial);
-            scene.add(galaxyPoints);
             
-            if(f.title!="Home") {
+            if(f.title!="Home" && f.constructor.name === 'Folder') {
+                //adding bunch of stars
+                const galaxyPoints = new THREE.Points(starsGeometry, StarsMaterial);
+                scene.add(galaxyPoints);
+
                 const url = f.request
     
                 this.fetch_img(url).then(res => {
-                    
-                    console.log(res)
-                    document.getElementById("folderDisplay").style.display = "";
                     scene.remove(galaxyPoints)
                     POS_MAX = INITIAL_POS
+                    
+                    console.log(res)
+                    f.clicked = false
+                    this.folder_focus = null
+                    document.getElementById("folderDisplay").style.display = "";
+                    this.folders = res
+
+                    setTimeout(() => {
+                        this.draw_Folders()
+                        
+                    }, 1000)
                 })
+            } else if (f.title=="Home") {
+                document.getElementById("folderDisplay").style.display = "";
             }
 
             
@@ -476,10 +514,10 @@ export default {
         },
         async fetch_img(url) {
             const IMGS_TAB = []
-            for (let i = 1; i < 10; i++) {
+            for (let i = 1; i < 4; i++) {
                 await axios.get(url.replace('page=1',`page=${i}`)).then(res => {
                     console.log(res.data)
-                    const imgs = res.data.hits.map(e => e.largeImageURL)
+                    const imgs = res.data.hits.map(e => new Image(e.id, e.tags, e.largeImageURL))
                     IMGS_TAB.push(...imgs)
                 })
             }
