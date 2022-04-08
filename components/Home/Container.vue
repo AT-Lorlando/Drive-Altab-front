@@ -1,15 +1,20 @@
 <template>
     <div class="flex flex-col items-center w-full h-full bg-black">
-    
         <canvas id="threecanvas" ref="canvas" class="absolute w-screen h-screen inset-0 z-0"></canvas>
+        <div class="pl-12 w-full text-white text-4xl z-10">
+            <button v-for="f in path" class="pathButton" @click="goto(f)">
+                {{`/`+f.title}}
+            </button>
+        </div>
         <!-- TODO: Sparkles -->
-        <div class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12"> 
+        <div id="folderDisplay" class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12"> 
             <div v-for="f in folders" v-show="!folder_focus || f.clicked" :key="f.id" class="h-80 w-auto z-10 hover:cursor-pointer" @click="onClick(f)">
                 <h2 class="break-normal text-white text-center uppercase text-xl absolute w-80">{{f.title}}</h2>
                 <div :id="`scene${f.id}`" @mouseover="hover(f)" class="w-80 h-80"/>
             </div>
         </div>
 
+        <!-- Modal to ask the password -->
         <div v-if="lockedModal" class="absolute mt-56 z-20 w-80 h-80 bg-white flex flex-col rounded-xl border-2 border-white py-2 bg-opacity-75 justify-between">
             <div class="flex flex-row justify-between items-center border-b-2 border-black px-4 pb-1">
                 <h2 class="text-2xl text-center uppercase">{{folder_focus.title}}</h2>
@@ -32,6 +37,8 @@
             </div>
         </div>
 
+        
+
     </div>
 </template>
 
@@ -39,8 +46,9 @@
 // Three js init 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+// import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
+// import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 import img from '../../assets/imgs/img.png';
-console.log(img)
 let renderer, controls, canvas, size, clock, cameraGlobal
 const scenes = []
 
@@ -52,8 +60,82 @@ class Folder {
         this.title = title
         this.password = password
         this.clicked = false
+        this.scene = new THREE.Scene()
+        this.folders = [] // tab ID of childs folders 
+        this.images = [] // tab ID of childs images
+        this.cover = [] // tab of images covering the folder
     }
 }
+
+// Star class to three js load
+
+const amount = 250
+const STARS = [];
+const galaxyGeometryVertices = [];
+const galaxyGeometryColors = [];
+const galaxyGeometrySizes = [];
+const starsGeometry = new THREE.BufferGeometry();
+const hue = 215/360
+let INITIAL_POS = -1
+// let POS_MAX = INITIAL_POS
+let POS_MAX = 1
+let StarsMaterial 
+let pixelRatio
+// let text 
+
+
+let galaxyColors = [
+  new THREE.Color().setHSL(hue,1,0.99),
+  new THREE.Color().setHSL(hue,1,0.95),
+  new THREE.Color().setHSL(hue,1,0.8),
+  new THREE.Color().setHSL(hue,1,0.7),
+  new THREE.Color().setHSL(hue,1,0.6)
+];
+
+const vertexshader = `
+attribute float size;
+attribute vec3 color;
+attribute float fade;
+
+varying vec3 vColor;
+
+void main() {
+    vColor = color;
+    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+    gl_PointSize = size * 20.0/-mvPosition.z;
+    gl_Position = projectionMatrix * mvPosition;
+}`
+
+const fragmentshader = `
+uniform sampler2D pointTexture;
+varying vec3 vColor;
+void main() {
+    gl_FragColor = vec4(vColor, 1.0);
+    gl_FragColor = gl_FragColor * texture2D(pointTexture, gl_PointCoord);
+}`
+
+class Star {
+  setup(color) {
+    this.y = -1.25 + ((Math.random() - 0.5) / 6);
+    this.x = INITIAL_POS + Math.abs((this.y/-1.25)-1);
+    this.z = -1;
+    this.v = (Math.random() / 0.5) * 0.1+0.01,
+    this.initial_x = this.x;
+    this.max_x = POS_MAX - Math.abs((this.y/-1.25)-1);
+    
+    this.size = Math.random() * 0.01 + 0.5 * pixelRatio;
+    this.color = color;
+  }
+  update() {
+    this.x += this.v/5
+    if (this.x > this.max_x) {
+      this.x = this.initial_x;
+    //   this.x -= 2;
+    }
+  }
+}
+
+// TEMPORARY DEF
 
 const FOLDERS = [
     new Folder(1, 'folder 1', "azerty"),
@@ -67,22 +149,24 @@ const FOLDERS = [
 export default {
     data() {
         return {
-            folders: FOLDERS,
-            folder_focus: null,
-            lockedModal: false,
+            path: [new Folder(0, 'Home')], // Path to travel between folder
+            folders: FOLDERS, // Folder actually displayed in the current folder
+            folder_focus: null, // Folder focus before entering
+            lockedModal: false, // Modal to unlock folder
+            loadingModal: false, // Modal to show loading state
         }
     },
     asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
         
-    },
+        },
     methods: {                              
         init() {
-            // scene = new THREE.Scene()
-            // camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
             canvas = document.getElementById(`threecanvas`)
             size = canvas.getBoundingClientRect()
+            clock = new THREE.Clock()
             renderer = new THREE.WebGLRenderer( {canvas: canvas, antialias: true, alpha: true } );
             renderer.setPixelRatio( window.devicePixelRatio );
+            pixelRatio = renderer.getPixelRatio()
             renderer.setClearColor( 0xffffff, 0 );
             renderer.setScissorTest( true );
             renderer.setSize( size.width, size.height );
@@ -90,9 +174,73 @@ export default {
             cameraGlobal = new THREE.PerspectiveCamera( 75, size.width / size.height, 0.1, 1000 );
             cameraGlobal.position.z = 2.5;
 
+            StarsMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    pointTexture: {
+                    value: new THREE.TextureLoader().load(
+                        "../../assets/imgs/dotTexture.png"
+                    )
+                    }
+                },
+                vertexShader: vertexshader,
+                fragmentShader: fragmentshader,
+                blending: THREE.AdditiveBlending,
+                alphaTest: 1.0,
+                transparent: true
+                });
 
-            clock = new THREE.Clock()
+            for (let i = 0; i < amount; i++) {
+                let star = new Star()
+                star.setup(galaxyColors[Math.floor(Math.random() * galaxyColors.length)])
+                galaxyGeometryVertices.push(star.x, star.y, star.z);
+                galaxyGeometryColors.push(star.color.r, star.color.g, star.color.b);
+                galaxyGeometrySizes.push(star.size);
+                STARS.push(star)
+            }
 
+            starsGeometry.setAttribute(
+                "size",
+                new THREE.Float32BufferAttribute(galaxyGeometrySizes, 1)
+            );
+            starsGeometry.setAttribute(
+                "color",
+                new THREE.Float32BufferAttribute(galaxyGeometryColors, 3)
+            );
+            starsGeometry.setAttribute(
+                "position", 
+                new THREE.Float32BufferAttribute(galaxyGeometryVertices, 3)
+            );
+
+            // A 'loading' text
+            // let loader = new FontLoader
+            // loader.load( '../../assets/fonts/helvetiker_regular.typeface.json', function ( font ) {
+            //     let textGeo = new TextGeometry( 'Loading...', {
+            //         font: font,
+            //         size: 0.05,
+            //         height: 0.1,
+            //         curveSegments: 12,
+            //         bevelEnabled: false
+            //     });
+            //     let textMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+            //     text = new THREE.Mesh( textGeo, textMaterial );
+            //     textGeo.computeBoundingBox();
+            //     text.position.x = -textGeo.boundingBox.max.x / 2;
+            //     text.position.y = -0.9;
+            //     text.position.z = 0;
+            //     text.rotation.x = 0;
+            //     text.rotation.y = 0;
+            //     text.rotation.z = 0;
+            //     text.scale.x = 1;
+            //     text.scale.y = 1;
+            //     text.scale.z = 1;
+            //     console.log(text)
+            //     text.lookAt(cameraGlobal.position);
+            //     // text.visible = false;
+            // });
+
+
+
+            // Plane position to form a cube
             const offset = 0.1
             const POS = [
                 {x: 0, y: 0, z: 0, rx: 0, ry: 0, rz: 0},
@@ -102,21 +250,18 @@ export default {
                 {x: 0.5+offset, y: 0, z: -(0.5+offset), rx: 0, ry: Math.PI/2, rz: 0},
                 {x: -(0.5+offset), y: 0, z: -(0.5+offset), rx: 0, ry: -Math.PI/2, rz: 0},]
 
-            function onMouseMove( event, size, camera ) {
-                mouse.x = ( event.clientX - size.x ) /  (size.width) - 0.5;
-                mouse.y = ( event.clientY - size.y ) / (size.height) - 0.5;
-                
-                    camera.position.x += ( mouse.x*2 - camera.position.x )*0.05 ;
-                    camera.position.y += ( - mouse.y*2- camera.position.y )*0.05 ;
-                }
+            
 
             const geometry = new THREE.PlaneGeometry( 1, 1 );
             const texture = new THREE.TextureLoader().load( img );
             const material = new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide } );
+
             FOLDERS.forEach(f => {
                 const scene = new THREE.Scene()
                 const sceneElement = document.getElementById( `scene${f.id}` );
                 scene.userData.element = sceneElement;
+                scene.userData.folder = f;
+                f.scene = scene
                 const sceneSize = sceneElement.getBoundingClientRect()
 
 
@@ -168,6 +313,13 @@ export default {
 
             })
             
+            function onMouseMove( event, size, camera ) {
+                mouse.x = ( event.clientX - size.x ) /  (size.width) - 0.5;
+                mouse.y = ( event.clientY - size.y ) / (size.height) - 0.5;
+                
+                    camera.position.x += ( mouse.x*2 - camera.position.x )*0.05 ;
+                    camera.position.y += ( - mouse.y*2- camera.position.y )*0.05 ;
+                }
 
             this.animate()
         },
@@ -194,6 +346,14 @@ export default {
                 renderer.setViewport( 0, 0, width, height );
                 renderer.setScissor( 0, 0, width, height );
                 renderer.render( scene, cameraGlobal );
+
+                let tempStarsArray = [];
+                STARS.forEach(s => {
+                    s.update();
+                    tempStarsArray.push(s.x, s.y, s.z);
+                    
+                });
+                starsGeometry.setAttribute("position", new THREE.Float32BufferAttribute(tempStarsArray, 3));
 
                 // const element = scene.userData.element;
                 // const rect = element.getBoundingClientRect();
@@ -232,12 +392,16 @@ export default {
             }            
         },
         hover(f) {
-            console.log(f)
+            // console.log(f)
         },
         onClick(f) {
             console.log(f)
             f.clicked = !f.clicked
             this.folder_focus = this.folder_focus? null : f
+
+            this.path.push(f)
+
+            document.getElementById("folderDisplay").style.display = "none";
 
             // Change the class of the clicked element
             const element = document.getElementById( `scene${f.id}` );
@@ -247,7 +411,37 @@ export default {
             // Show lockedModal if the folder is locked
             if(f.password) {
                 this.lockedModal = true
+            } else {
+                this.goto(f)
             }
+        },
+        goto(f) {
+            
+            if(f != this.folder_focus) {
+                this.lockedModal = false
+                this.folder_focus = f.title=="Home"? null : f
+            }
+
+            this.folders.forEach(e => {
+                if(e!=f) {
+                    e.clicked = false
+                }
+            })
+
+            this.path = this.path.slice(0, this.path.indexOf(f)+1)
+
+            // Add the loading animation to the scene
+            const scene = f.scene
+            console.log(scene)
+
+            //adding bunch of stars
+            const galaxyPoints = new THREE.Points(starsGeometry, StarsMaterial);
+            scene.add(galaxyPoints);
+
+            setTimeout(() => {
+                document.getElementById("folderDisplay").style.display = "";
+                scene.remove(galaxyPoints)
+            }, 1000)
         },
         
     },
@@ -258,3 +452,11 @@ export default {
 }
 
 </script>
+
+<style scoped>
+.pathButton
+{
+    @apply hover:bg-white hover:bg-opacity-10 hover:cursor-pointer rounded-xl py-2 transition-colors duration-150 ease-in transform
+}
+
+</style>
