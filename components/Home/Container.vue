@@ -4,7 +4,7 @@
         <canvas id="threecanvas" ref="canvas" class="absolute w-screen h-screen inset-0 z-0"></canvas>
         <!-- TODO: Sparkles -->
         <div class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12"> 
-            <div v-for="f in folders" :key="f.id" class="h-80 w-auto z-10">
+            <div  v-for="f in folders" v-show="!folder_focus || f.clicked" :key="f.id" class="h-80 w-auto z-10 hover:cursor-pointer" @click="onClick(f)">
                 <h2 class="break-normal text-white text-center uppercase text-xl absolute w-80">{{f.title}}</h2>
                 <div :id="`scene${f.id}`" @mouseover="hover(f)" class="w-80 h-80"/>
             </div>
@@ -18,7 +18,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import img from '../../assets/imgs/img.png';
 console.log(img)
-let renderer, controls, canvas, size, clock
+let renderer, controls, canvas, size, clock, cameraGlobal
 const scenes = []
 
 const mouse = new THREE.Vector2()
@@ -28,6 +28,7 @@ class Folder {
         this.id = id
         this.title = title
         this.password = ''
+        this.clicked = false
     }
 }
 
@@ -43,7 +44,8 @@ const FOLDERS = [
 export default {
     data() {
         return {
-            folders: FOLDERS
+            folders: FOLDERS,
+            folder_focus: null,
         }
     },
     asyncData({isDev, route, store, env, params, query, req, res, redirect, error}) {
@@ -60,6 +62,10 @@ export default {
             renderer.setClearColor( 0xffffff, 0 );
             renderer.setScissorTest( true );
             renderer.setSize( size.width, size.height );
+
+            cameraGlobal = new THREE.PerspectiveCamera( 75, size.width / size.height, 0.1, 1000 );
+            cameraGlobal.position.z = 2.5;
+
 
             clock = new THREE.Clock()
 
@@ -80,14 +86,15 @@ export default {
                     camera.position.y += ( - mouse.y*2- camera.position.y )*0.05 ;
                 }
 
-
+            const geometry = new THREE.PlaneGeometry( 1, 1 );
+            const texture = new THREE.TextureLoader().load( img );
+            const material = new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide } );
             FOLDERS.forEach(f => {
                 const scene = new THREE.Scene()
                 const sceneElement = document.getElementById( `scene${f.id}` );
                 scene.userData.element = sceneElement;
                 const sceneSize = sceneElement.getBoundingClientRect()
 
-                sceneElement.parentElement.addEventListener( 'mousemove', function(){ onMouseMove(event, sceneSize, camera); } );
 
 
                 // const camera = new THREE.PerspectiveCamera( 50,1, 1, 1000 );
@@ -103,9 +110,7 @@ export default {
 
                 // add 8 plane forming a cube
                 const cube = new THREE.Group()
-                const geometry = new THREE.PlaneGeometry( 1, 1 );
-                const texture = new THREE.TextureLoader().load( img );
-                const material = new THREE.MeshBasicMaterial( { map: texture, side: THREE.DoubleSide } );
+                
 
                 for ( let i = 0; i < 6; i ++ ) {
                     const mesh = new THREE.Mesh( geometry, material );
@@ -119,6 +124,8 @@ export default {
                     cube.add( mesh );
                 }
                 scene.add( cube );
+
+                // Add sparkles                
                 
 
 
@@ -130,6 +137,8 @@ export default {
                 light.position.set( 1, 1, 1 );
                 scene.add( light );
                 scenes.push( scene );
+                sceneElement.parentElement.addEventListener( 'mousemove', 
+                    () => { !this.folder_focus? onMouseMove(event, sceneSize, camera):""; } );
 
                 console.log(scene)
 
@@ -149,30 +158,47 @@ export default {
             let t = clock.getElapsedTime()
             // renderer.setClearColor( 0x000000 );
             // renderer.setScissorTest( true );
-            scenes.forEach((s, index) => {
-                const element = s.userData.element;
-                const rect = element.getBoundingClientRect();
-                // set the viewport
+            if(this.folder_focus) {
+                const scene = scenes[this.folder_focus.id-1]
+                scene.children[0].rotation.y = Math.cos(t/4+Math.PI/2) * Math.PI/2 * 0.75;
+
+
+                const rect = renderer.domElement.getBoundingClientRect()
                 const width = rect.right - rect.left;
                 const height = rect.bottom - rect.top;
-                const left = rect.left;
-                const bottom = renderer.domElement.clientHeight - rect.bottom;
-
-                // s.children[0].rotateOnAxis(new THREE.Vector3(0,1,0), 0.01);
-                s.children[0].rotation.y = Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
-                // s.children[0].rotation.y = -Math.cos(t) * Math.PI/2 * 0.75;
-
-                renderer.setViewport( left, bottom, width, height );
-                renderer.setScissor( left, bottom, width, height );
-
-                const camera = s.userData.camera;
+                renderer.setViewport( 0, 0, width, height );
+                renderer.setScissor( 0, 0, width, height );
                 // camera.position.y = Math.cos( t + index ) *0.8  ;
-                camera.lookAt( 0,0,0 );
-                renderer.render( s, camera );
-            })
+
+                renderer.render( scene, cameraGlobal );
+            } else {
+                scenes.forEach((s, index) => {
+                    const element = s.userData.element;
+                    // s.children[0].rotateOnAxis(new THREE.Vector3(0,1,0), 0.01);
+                    s.children[0].rotation.y = Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
+                    // s.children[0].rotation.y = -Math.cos(t) * Math.PI/2 * 0.75;
+                    const camera = s.userData.camera;
+                    const rect = element.getBoundingClientRect();   
+                    // set the viewport
+                    const width = rect.right - rect.left;
+                    const height = rect.bottom - rect.top;
+                    const left = rect.left;
+                    const bottom = renderer.domElement.clientHeight - rect.bottom;
+                    renderer.setViewport( left, bottom, width, height );
+                    renderer.setScissor( left, bottom, width, height );
+                    // camera.position.y = Math.cos( t + index ) *0.8  ;
+                    camera.lookAt( 0,0,0 );
+                    renderer.render( s, camera );
+                })
+            }            
         },
         hover(f) {
             console.log(f)
+        },
+        onClick(f) {
+            console.log(f)
+            f.clicked = !f.clicked
+            this.folder_focus = this.folder_focus? null : f
         },
         
     },
