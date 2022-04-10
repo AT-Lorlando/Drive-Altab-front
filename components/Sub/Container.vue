@@ -186,6 +186,7 @@ export default {
                 scene.userData.folder = f;
                 f.scene = scene
                 const sceneSize = sceneElement.getBoundingClientRect()
+                console.log(sceneSize)
                 const camera = new THREE.PerspectiveCamera( 50, 1, 1, 10 );
                 camera.position.z = 2.5;
                 scene.userData.camera = camera;
@@ -324,14 +325,15 @@ export default {
         startLoading(f) {
             const scene = f.scene
             scene?.add(galaxyPoints);
-            console.log(scene)
         },
         endLoading(f) {
+            this.focusedFile = null
             const scene = f.scene
             scene?.remove(galaxyPoints)
             POS_MAX = INITIAL_POS
-            this.focusedFile = f.title=="Home"? null : f
+            // this.focusedFile = f.title=="Home"? null : f
             document.getElementById("folderDisplay").style.display = "";
+            this.draw_Folder()
         },
     },
     mounted() {

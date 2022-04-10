@@ -18,12 +18,12 @@
 <script>
 // Import axios
 import axios from 'axios'
-let url = 'https://pixabay.com/api/?key=5832566-81dc7429a63c86e3b707d0429&q={SEARCH}&per_page=10&page=1'
+let APIurl = 'https://pixabay.com/api/?key=5832566-81dc7429a63c86e3b707d0429&q={SEARCH}&per_page=10&page=1'
 
 export default {
     data() {
         return {
-            path: [{id: 0, title: "Home", password: ""}],
+            path: [{id: 0, title: "Home", password: "", type: "Folder"}],
             folder: [],
             lockedModal: false,
         };
@@ -34,20 +34,23 @@ export default {
             if (f.password != "") {
                 this.lockedModal = true               
             } else {
-                this.$refs.Scene.startLoading(f);
-                this.openFile(f).then(() => {
-                    this.$refs.Scene.endLoading(f);
-                })
+                this.openFile(f)
             }
         },
         async openFile(f) {
+            this.$refs.Scene.startLoading(f);
             console.log("Open", f)
             this.lockedModal = false
             this.path = this.path.slice(0, this.path.indexOf(f)+1)
-            this.fetch_folder(f.title)
-            setTimeout(() => {
-                console.log(this.path, "opened")
-            }, 2000)
+            if (f.type == "Folder") {
+                await this.fetch_folder(f.title).then(res => {
+                        setTimeout(() => {
+                            this.$refs.Scene.endLoading(f);
+                        }, 1000);
+                    })
+            } else if (f.type == "image") {
+                pass
+            }
         },
         async fetch_img(url) {
             const IMGS_TAB = [];
@@ -62,6 +65,7 @@ export default {
             return IMGS_TAB;
         },
         async fetch_folder(url) {
+            console.log("Fetch folder", url)
             if (url == "Home") {
                 this.folder = [
                     {id: 1, title: "Blue", type: "Folder",password: "Azerty"},
@@ -75,6 +79,12 @@ export default {
                     {id: 9, title: "Cyan", type: "Folder",password: ""},
                     {id: 10, title: "Yellow", type: "Folder",password: ""},
                 ]
+            } else {
+                // Fetch with axios
+                await axios.get(APIurl.replace('{SEARCH}', url)).then(res => {
+                    console.log(res.data)
+                    this.folder = res.data.hits.map(e => {return {id: e.id,title: e.tags,data: e.largeImageURL, type: "image"}});
+                });
             }
         }
     },
