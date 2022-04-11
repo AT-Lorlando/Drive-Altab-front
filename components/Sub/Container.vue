@@ -1,8 +1,8 @@
 <template>
     <div id="folderDisplay" class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12 bg-black"> 
-        <div v-for="file in currentPage" v-show="!focusedFile || focusedFile === file" :key="file.id" class="h-80 w-auto z-10 hover:cursor-pointer" @click="onClick(file)">
+        <div v-for="(file, index) in currentPage" v-show="!focusedFile || focusedFile === file" :key="index" class="h-80 w-auto z-10 hover:cursor-pointer" @click="onClick(file, index)">
             <h2 class="break-normal text-white text-center uppercase text-xl absolute w-80">{{file.title}}</h2>
-            <div :id="`scene${file.id}`" @mouseover="hover(file)" class="w-80 h-80"/>
+            <div :id="`scene${index}`" @mouseover="hover(file)" class="w-80 h-80"/>
         </div>
     </div>
 </template>
@@ -13,6 +13,7 @@ import * as THREE from 'three';
 import img from '../../assets/imgs/img.png';
 let renderer, controls, canvas, size, clock, cameraGlobal
 const scenes = []
+const defaultScene = new THREE.Scene()
 const mouse = new THREE.Vector2()
 // Cube and plane parameters
 const offset = 0.1
@@ -36,8 +37,7 @@ const hue = 215/360
 let INITIAL_POS = -1
 // let POS_MAX = INITIAL_POS
 let POS_MAX = 1
-let StarsMaterial, galaxyPoints 
-let pixelRatio
+let StarsMaterial, galaxyPoints, pixelRatio
 const galaxyColors = [
   new THREE.Color().setHSL(hue,1,0.99),
   new THREE.Color().setHSL(hue,1,0.95),
@@ -89,6 +89,44 @@ class Star {
   }
 }
 
+function onMouseMove( event, size, camera ) {
+    mouse.x = ( event.clientX - size.x ) /  (size.width) - 0.5;
+    mouse.y = ( event.clientY - size.y ) / (size.height) - 0.5;
+    
+    camera.position.x += ( mouse.x*2 - camera.position.x )*0.05 ;
+    camera.position.y += ( - mouse.y*2- camera.position.y )*0.05 ;
+}
+
+function folderMesh(f) {
+    if(f.type === 'Folder') {
+        // add 8 plane forming a cube
+        const cube = new THREE.Group()    
+        for ( let i = 0; i < 6; i ++ ) {
+            const mesh = new THREE.Mesh( geometryCube, material );
+            mesh.position.x = POS[i].x;
+            mesh.position.y = POS[i].y;
+            mesh.position.z = POS[i].z+0.5;
+
+            mesh.rotation.x = POS[i].rx;
+            mesh.rotation.y = POS[i].ry;
+            mesh.rotation.z = POS[i].rz;
+            cube.add( mesh );
+        }
+        cube.name = 'toRotate'
+        return cube
+    } else {
+        // Add a plane facing the camera
+        const new_texture = new THREE.TextureLoader().load( f.data );
+        const new_material = new THREE.MeshBasicMaterial( { map: new_texture, side: THREE.DoubleSide } );
+        const mesh = new THREE.Mesh( geometryPlane, new_material );
+        mesh.position.x = 0;
+        mesh.position.y = 0;
+        mesh.position.z = 0;
+        mesh.name = 'toRotate'
+        return mesh
+    }
+}
+
 export default {
     props: {
         currentPage: {
@@ -113,6 +151,7 @@ export default {
         return {
             // files: this.currentPage,
             focusedFile: null,
+            fileIndex: null,
         }
     },
     methods: {
@@ -176,65 +215,45 @@ export default {
 
             galaxyPoints = new THREE.Points(starsGeometry, StarsMaterial);
 
+            const camera = new THREE.PerspectiveCamera( 50, 1, 1, 10 );
+            camera.position.z = 2.5;
+            camera.name='camera'
+            defaultScene.add(camera);
+            defaultScene.add( new THREE.HemisphereLight( 0xaaaaaa, 0x444444 ) );
+            const light = new THREE.DirectionalLight( 0xffffff, 0.5 );
+            light.position.set( 1, 1, 1 );
+            defaultScene.add( light );
         },
         draw_Folder() {
             console.log("Draw folder", this.currentPage)
-            this.currentPage.forEach(f => {
-                const scene = new THREE.Scene()
-                const sceneElement = document.getElementById( `scene${f.id}` );
-                scene.userData.element = sceneElement;
-                scene.userData.folder = f;
-                f.scene = scene
-                const sceneSize = sceneElement.getBoundingClientRect()
-                console.log(sceneSize)
-                const camera = new THREE.PerspectiveCamera( 50, 1, 1, 10 );
-                camera.position.z = 2.5;
-                scene.userData.camera = camera;
-
-            
-                if(f.type === 'Folder') {
-                    // add 8 plane forming a cube
-                    const cube = new THREE.Group()    
-                    for ( let i = 0; i < 6; i ++ ) {
-                        const mesh = new THREE.Mesh( geometryCube, material );
-                        mesh.position.x = POS[i].x;
-                        mesh.position.y = POS[i].y;
-                        mesh.position.z = POS[i].z+0.5;
-    
-                        mesh.rotation.x = POS[i].rx;
-                        mesh.rotation.y = POS[i].ry;
-                        mesh.rotation.z = POS[i].rz;
-                        cube.add( mesh );
+            this.currentPage.forEach((f, index) => {
+                let scene
+                if (scenes[index]) {
+                    scene = scenes[index]
+                    const obj = scene.getObjectByName( 'toRotate' );
+                    const sceneElement = document.getElementById( `scene${index}` );
+                    scene.userData.element = sceneElement;	
+                    const sceneSize = scene.userData.size                    
+                    sceneElement.parentElement.addEventListener( 'mousemove', 
+                        () => { !this.focusedFile? onMouseMove(event, sceneSize, scene.getObjectByName( 'camera' )):""; } );
+                    if (obj) {
+                        scene.remove( obj );
                     }
-                    scene.add( cube );
                 } else {
-                    // Add a plane facing the camera
-                    const mesh = new THREE.Mesh( geometryPlane, material );
-                    mesh.position.x = 0;
-                    mesh.position.y = 0;
-                    mesh.position.z = 0;
-                    scene.add( mesh );
+                    scene = new THREE.Scene();
+                    scene.copy(defaultScene);
+                    console.log(scene)
+                    const sceneElement = document.getElementById( `scene${index}` );
+                    const sceneSize = sceneElement.getBoundingClientRect()
+                    scene.userData.element = sceneElement;
+                    scene.userData.size = sceneSize;
+                    sceneElement.parentElement.addEventListener( 'mousemove', 
+                        () => { !this.focusedFile? onMouseMove(event, sceneSize, scene.getObjectByName( 'camera' )):pass; } );
+                    
+                    scenes.push( scene );
                 }
-                // Add sparkles                
-                // scene.add( new THREE.Mesh( geometry, material ) );
-                scene.add( new THREE.HemisphereLight( 0xaaaaaa, 0x444444 ) );
-                const light = new THREE.DirectionalLight( 0xffffff, 0.5 );
-                light.position.set( 1, 1, 1 );
-                scene.add( light );
-                scenes.push( scene );
-                sceneElement.parentElement.addEventListener( 'mousemove', 
-                    () => { !this.focusedFile? onMouseMove(event, sceneSize, camera):""; } );
-
-                // console.log(scene)
-
-                function onMouseMove( event, size, camera ) {
-                mouse.x = ( event.clientX - size.x ) /  (size.width) - 0.5;
-                mouse.y = ( event.clientY - size.y ) / (size.height) - 0.5;
-                
-                    camera.position.x += ( mouse.x*2 - camera.position.x )*0.05 ;
-                    camera.position.y += ( - mouse.y*2- camera.position.y )*0.05 ;
-                }
-
+                f.scene = scene
+                scene.add( folderMesh(f) );
             })
         },
         animate() {
@@ -249,8 +268,9 @@ export default {
             // renderer.setClearColor( 0x000000 );
             // renderer.setScissorTest( true );
             if(this.focusedFile) {
-                const scene = scenes[this.focusedFile.id-1]
-                scene.children[0].rotation.y = Math.cos(t/4+Math.PI/2) * Math.PI/2 * 0.75;
+                const scene = scenes[this.fileIndex]
+                const obj = scene.getObjectByName( 'toRotate' );	
+                obj.rotation.y = Math.cos(t/4+Math.PI/2) * Math.PI/2 * 0.5;
 
 
                 const rect = renderer.domElement.getBoundingClientRect()
@@ -268,35 +288,21 @@ export default {
                     
                 });
                 starsGeometry.setAttribute("position", new THREE.Float32BufferAttribute(tempStarsArray, 3));
-
-                // const element = scene.userData.element;
-                // const rect = element.getBoundingClientRect();
-                // // set the viewport
-                // const width = rect.right - rect.left;
-                // const height = rect.bottom - rect.top;
-                // const left = rect.left;
-                // const bottom = renderer.domElement.clientHeight - rect.bottom;
-                // renderer.setViewport( left, bottom, width, height );
-                // renderer.setScissor( left, bottom, width, height );   
-                // const camera = scene.userData.camera;
-                // renderer.render( scene, camera );
-
-
-                // camera.position.y = Math.cos( t + index ) *0.8  ;
-
             } else {
                 scenes.forEach((s, index) => {
                     const element = s.userData.element;
                     // s.children[0].rotateOnAxis(new THREE.Vector3(0,1,0), 0.01);
-                    if(s.userData.folder.constructor.name === 'Folder') {
-                        s.children[0].rotation.y =  Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
-                    } else {
-                        s.children[0].rotation.y =  Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.5;
+                    const obj = s.getObjectByName( 'toRotate' );	
+                    // If obj is a group or a mesh
+                    if ( obj.type === 'Group') {
+                        obj.rotation.y =  Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
+                    } else if ( obj.type === 'Mesh') {
+                        obj.rotation.y =  Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.5;
                     }
                     // s.children[0].rotation.y = Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
                     // s.children[0].rotation.y = -Math.cos(t) * Math.PI/2 * 0.75;
-                    const camera = s.userData.camera;
-                    const rect = element.getBoundingClientRect();   
+                    const camera = s.getObjectByName( 'camera' );
+                    const rect = element.getBoundingClientRect();
                     // set the viewport
                     const width = rect.right - rect.left;
                     const height = rect.bottom - rect.top;
@@ -313,14 +319,20 @@ export default {
         hover(f) {
             // console.log(f)
         },
-        onClick(f) {
+        onClick(f,i) {
             // Set the focused file to the file that was clicked, if it the same, than close
             this.focusedFile = this.focusedFile? null : f
+            this.fileIndex = i
             document.getElementById("folderDisplay").style.display = "none";
-            const element = document.getElementById( `scene${f.id}` );
+            const element = f.scene.userData.element
             element.parentElement.classList.toggle('hover:cursor-pointer')
 
-            this.gotoFile(f)
+            if(f.type === "image") {
+                return
+            } else {
+                this.gotoFile(f)
+            }
+
         },
         startLoading(f) {
             const scene = f.scene
