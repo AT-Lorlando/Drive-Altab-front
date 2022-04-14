@@ -327,12 +327,7 @@ export default {
             const element = f.scene.userData.element
             element.parentElement.classList.toggle('hover:cursor-pointer')
 
-            if(f.type === "image") {
-                return
-            } else {
-                this.gotoFile(f)
-            }
-
+            this.gotoFile(f)
         },
         startLoading(f) {
             const scene = f.scene

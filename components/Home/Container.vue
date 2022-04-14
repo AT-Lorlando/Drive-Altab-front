@@ -10,7 +10,10 @@
         <SubContainer :currentPage="folder" :nextPage="folder" ref="Scene" :gotoFile="gotoFile"/>
 
         <!-- Modal to ask the password -->
-        <ModalLocked v-if="lockedModal" :close="closeModal" :confirm="confirmModal" :title="'Test'"/>
+        <ModalLocked v-if="lockedModal" :close="() => {this.lockedModal == false}" :confirm="confirmModal" :title="'Test'"/>
+
+        <!-- Modal if the photo is focus -->
+        <ModalPhoto v-if="photoModal" :close="() => {this.photoModal == false}" :confirm="confirmModal" :title="'Test'"/>
 
     </div>
 </template>
@@ -26,6 +29,7 @@ export default {
             path: [{id: 0, title: "Home", password: "", type: "Folder"}],
             folder: [],
             lockedModal: false,
+            photoModal: false,
         };
     },
     methods: {
@@ -33,23 +37,23 @@ export default {
             this.path.push(f)
             if (f.password != "") {
                 this.lockedModal = true               
-            } else {
-                this.openFile(f)
             }
+            this.openFile(f)
         },
         async openFile(f) {
-            this.$refs.Scene.startLoading(f);
-            console.log("Open", f)
             this.lockedModal = false
+            this.photoModal = false
+            console.log("Open", f)
             this.path = this.path.slice(0, this.path.indexOf(f)+1)
             if (f.type == "Folder") {
+                this.$refs.Scene.startLoading(f);
                 await this.fetch_folder(f.title).then(res => {
                         setTimeout(() => {
                             this.$refs.Scene.endLoading(f);
                         }, 1000);
                     })
             } else if (f.type == "image") {
-                pass
+                this.photoModal = true
             }
         },
         async fetch_img(url) {
