@@ -15,17 +15,34 @@ export default {
         Color: {
             type: String,
             default: 'black'
-        }
+        },
+        Size: {
+            type: String,
+            default: 'small'
+        },
     },
     data() {
-        if (this.Color == 'black') {
+        if( this.Size == "small") {
+            if (this.Color == 'black') {
+                return {
+                    add_class: 'bg-black hover:bg-opacity-0 text-white hover:text-black border hover:border-black'
+                }
+            } else if (this.Color == 'transparent') {
+                return {
+                    add_class: 'bg-transparent hover:bg-black hover:text-white border border-black hover:border-white'
+                }
+            }
+        } else if (this.Size=="medium") {
+            if (this.Color == 'black') {
             return {
-                add_class: 'bg-black hover:bg-opacity-0 text-white hover:text-black border hover:border-black'
+                add_class: 'bg-black hover:bg-white text-white hover:text-black border hover:border-black'
             }
         } else if (this.Color == 'transparent') {
             return {
                 add_class: 'bg-transparent hover:bg-black hover:text-white border border-black hover:border-white'
             }
+        }
+
         }
     },
 }
