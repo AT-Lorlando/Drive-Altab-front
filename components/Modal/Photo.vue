@@ -32,17 +32,17 @@
 <script>
 export default {
      props: {
-        title: {
-            type: String,
-            default: 'File'
-        },
         close: {
             type: Function,
             default: () => {
                 console.log("test")
             }
         },
-        confirm : {
+        next : {
+            type: Function,
+            default: () => {}
+        },
+        previous : {
             type: Function,
             default: () => {}
         },
@@ -53,6 +53,7 @@ export default {
     },
     data() {
         return {
+            currentPhoto: this.photo,
             informations: [{
                 name: 'Taille',
                 value: this.photo.size
@@ -92,9 +93,28 @@ export default {
         },
         fetchPhoto() {
             if (this.fullSize == null) {
-                console.log('Fetch photo', this.photo.id, 'in fullsize');
+                console.log('Fetch photo', this.currentPhoto.id, 'in fullsize');
             }
-            this.fullSize = this.photo.url;
+            this.fullSize = true;
+        },
+        setPhoto(photo) {
+            this.informations = [{
+                name: 'Taille',
+                value: photo.size
+            }, {
+                name: 'Type',
+                value: photo.type
+            }, {
+                name: 'Dimensions',
+                value: photo.width + 'x' + photo.height
+            }, {
+                name: 'Nom',
+                value: photo.title
+            }, {
+                name: 'Date',
+                value: photo.date
+            }]
+            this.currentPhoto = photo;
         },
     },
 }

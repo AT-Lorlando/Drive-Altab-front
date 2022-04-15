@@ -13,7 +13,13 @@
         <ModalLocked v-if="lockedModal" :close="() => {this.lockedModal == false}" :confirm="confirmModal" :title="'Test'"/>
 
         <!-- Modal if the photo is focus -->
-        <ModalPhoto v-if="photoModal" :close="closeModal" :confirm="confirmModal" :title="'Test'" :photo="photo"/>
+        <ModalPhoto v-if="photoModal" 
+            :close="closeModal" 
+            :photo="photo"
+            :next="nextPhoto"
+            :previous="previousPhoto"
+            ref="Photo"
+            />
 
     </div>
 </template>
@@ -54,9 +60,8 @@ export default {
                         }, 1000);
                     })
             } else if (f.type == "image") {
-                this.photoModal = true
                 this.photo = f
-                console.log(f)
+                this.photoModal = true
             }
         },
         async fetch_folder(url) {
@@ -97,8 +102,27 @@ export default {
                 this.lockedModal = false
             } else if (s == 'photo') {
                 this.photoModal = false
+                this.path.pop()
             }
-        }
+        },
+        nextPhoto() {
+            this.path.pop()
+            let f = this.folder[(this.folder.indexOf(this.photo)+1)%this.folder.length]
+            this.$refs.Scene.focusedFile = f
+            this.$refs.Scene.fileIndex = this.folder.indexOf(f)
+            this.photo = f
+            this.gotoFile(f)
+            this.$refs.Photo.setPhoto(f)
+        },
+        previousPhoto() {
+            this.path.pop()
+            let f = this.folder[(this.folder.indexOf(this.photo)-1+this.folder.length)%this.folder.length]
+            this.$refs.Scene.focusedFile = f
+            this.$refs.Scene.fileIndex = this.folder.indexOf(f)
+            this.photo = f
+            this.gotoFile(f)
+            this.$refs.Photo.setPhoto(f)
+        },
     },
     mounted() {
         console.log('Fetching home...')
