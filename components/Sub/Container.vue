@@ -152,6 +152,7 @@ export default {
             // files: this.currentPage,
             focusedFile: null,
             fileIndex: null,
+            folderDisplay: null, // The element used to display the folder
         }
     },
     methods: {
@@ -323,9 +324,10 @@ export default {
             // Set the focused file to the file that was clicked, if it the same, than close
             this.focusedFile = this.focusedFile? null : f
             this.fileIndex = i
-            document.getElementById("folderDisplay").style.display = "none";
+            // document.getElementById("folderDisplay").style.display = "none";
+            folderDisplay.style.visibility = "hidden";
             const element = f.scene.userData.element
-            element.parentElement.classList.toggle('hover:cursor-pointer')
+            // element.parentElement.classList.toggle('hover:cursor-pointer')
 
             this.gotoFile(f)
         },
@@ -339,7 +341,8 @@ export default {
             scene?.remove(galaxyPoints)
             POS_MAX = INITIAL_POS
             // this.focusedFile = f.title=="Home"? null : f
-            document.getElementById("folderDisplay").style.display = "";
+            // document.getElementById("folderDisplay").style.display = "";
+            folderDisplay.style.visibility = "visible";
             this.draw_Folder()
         },
     },
@@ -347,7 +350,7 @@ export default {
         canvas = this.$refs.canvas
         this.init()
         this.animate()
-        
+        this.folderDisplay = document.getElementById("folderDisplay");
     },
 }
 

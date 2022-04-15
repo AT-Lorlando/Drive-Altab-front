@@ -21,10 +21,10 @@
             </button>
         </div>
         <div class="w-1/3 h-auto px-4 pl-20 space-y-8 my-auto flex flex-col">
-                <AltabButton @click="close" class="w-80" Title="Télécharger" Color="black" Size="medium"/>
+                <AltabButton @click="download" class="w-80" Title="Télécharger" Color="black" Size="medium"/>
                 <AltabButton @click="close" class="w-80" Title="Demander une retouche" Color="black" Size="medium"/>
                 <AltabButton @click="close" class="w-80" Title="Demander de l'aide" Color="black" Size="medium"/>
-                <AltabButton @click="close" class="w-80" Title="Fermer" Color="black" Size="medium"/>
+                <AltabButton @click="close('photo')" class="w-80" Title="Fermer" Color="black" Size="medium"/>
         </div>
     </div>
 </template>
@@ -38,18 +38,64 @@ export default {
         },
         close: {
             type: Function,
-            default: () => {}
+            default: () => {
+                console.log("test")
+            }
         },
         confirm : {
             type: Function,
             default: () => {}
         },
-        informations : {
-            type: Array,
-            default: [
-                {name: 'Name', value: 'Value'},
-                {name: 'Second info', value: 'Value'}]
+        photo : {
+            type: Object,
+            default: {}
         }
+    },
+    data() {
+        return {
+            informations: [{
+                name: 'Taille',
+                value: this.photo.size
+            }, {
+                name: 'Type',
+                value: this.photo.type
+            }, {
+                name: 'Dimensions',
+                value: this.photo.width + 'x' + this.photo.height
+            }, {
+                name: 'Nom',
+                value: this.photo.title
+            }, {
+                name: 'Date',
+                value: this.photo.date
+            }],
+            fullSize: null,
+        }
+    },
+    methods: {
+        download() {
+            console.log('download');
+            // Fetch the photo in its original size if it's not already done, then download it
+            this.fetchPhoto()
+        },
+        askRetouch() {
+            console.log('Retouche');
+        },
+        askHelp() {
+            console.log('Help');
+        },
+        fullscreen() {
+            console.log('fullscreen');
+            // Fetch the photo in its original size if it's not already done, then display it in fullscreen
+            this.fetchPhoto()
+            
+        },
+        fetchPhoto() {
+            if (this.fullSize == null) {
+                console.log('Fetch photo', this.photo.id, 'in fullsize');
+            }
+            this.fullSize = this.photo.url;
+        },
     },
 }
 </script>

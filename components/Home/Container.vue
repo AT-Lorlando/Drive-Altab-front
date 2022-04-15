@@ -13,7 +13,7 @@
         <ModalLocked v-if="lockedModal" :close="() => {this.lockedModal == false}" :confirm="confirmModal" :title="'Test'"/>
 
         <!-- Modal if the photo is focus -->
-        <ModalPhoto v-if="photoModal" :close="() => {this.photoModal == false}" :confirm="confirmModal" :title="'Test'"/>
+        <ModalPhoto v-if="photoModal" :close="closeModal" :confirm="confirmModal" :title="'Test'" :photo="photo"/>
 
     </div>
 </template>
@@ -30,6 +30,7 @@ export default {
             folder: [],
             lockedModal: false,
             photoModal: false,
+            photo: {},
         };
     },
     methods: {
@@ -54,19 +55,9 @@ export default {
                     })
             } else if (f.type == "image") {
                 this.photoModal = true
+                this.photo = f
+                console.log(f)
             }
-        },
-        async fetch_img(url) {
-            const IMGS_TAB = [];
-            for (let i = 1; i < 2; i++) {
-                await axios.get(url.replace("page=1", `page=${i}`)).then(res => {
-                    // console.log(res.data)
-                    const imgs = res.data.hits.map(e => new Image(e.id, e.tags, e.largeImageURL));
-                    console.log(...imgs);
-                    IMGS_TAB.push(...imgs);
-                });
-            }
-            return IMGS_TAB;
         },
         async fetch_folder(url) {
             console.log("Fetch folder", url)
@@ -87,8 +78,25 @@ export default {
                 // Fetch with axios
                 await axios.get(APIurl.replace('{SEARCH}', url)).then(res => {
                     console.log(res.data)
-                    this.folder = res.data.hits.map(e => {return {id: e.id,title: e.tags,data: e.largeImageURL, type: "image"}});
+                    this.folder = res.data.hits.map(e => {return {
+                        id: e.id,
+                        title:e.tags,
+                        data: e.largeImageURL,
+                        width: e.imageWidth,
+                        height: e.imageHeight,
+                        date: '04/12/2000',
+                        size: 420,
+                        type: "image"}});
                 });
+            }
+        },
+        closeModal(s) {
+            this.$refs.Scene.focusedFile = null;
+            this.$refs.Scene.folderDisplay.style.visibility = "visible";
+            if (s == "locked") {
+                this.lockedModal = false
+            } else if (s == 'photo') {
+                this.photoModal = false
             }
         }
     },
