@@ -1,6 +1,6 @@
 <template>
     <button 
-        :class="`transition-colors duration-300 ease-in transform hover:scale-110 w-20 rounded-xl hover:cursor-pointer px-2 h-12 ${add_class}`">
+        :class="`transition-colors duration-300 ease-in transform  w-20 rounded-xl hover:cursor-pointer px-2 h-12 ${add_class}`">
 
         {{Title}}
     </button>
@@ -25,21 +25,21 @@ export default {
         if( this.Size == "small") {
             if (this.Color == 'black') {
                 return {
-                    add_class: 'bg-black hover:bg-opacity-0 text-white hover:text-black border hover:border-black'
+                    add_class: 'bg-black hover:bg-opacity-0 text-white hover:text-black border hover:border-black hover:scale-110'
                 }
             } else if (this.Color == 'transparent') {
                 return {
-                    add_class: 'bg-transparent hover:bg-black hover:text-white border border-black hover:border-white'
+                    add_class: 'bg-transparent hover:bg-black hover:text-white border border-black hover:border-white hover:scale-110'
                 }
             }
         } else if (this.Size=="medium") {
             if (this.Color == 'black') {
             return {
-                add_class: 'bg-black hover:bg-white text-white hover:text-black border hover:border-black'
+                add_class: 'bg-black hover:bg-white text-white hover:text-black border hover:border-black hover:scale-105'
             }
         } else if (this.Color == 'transparent') {
             return {
-                add_class: 'bg-transparent hover:bg-black hover:text-white border border-black hover:border-white'
+                add_class: 'bg-transparent hover:bg-black hover:text-white border border-black hover:border-white hover:scale-10'
             }
         }
 
