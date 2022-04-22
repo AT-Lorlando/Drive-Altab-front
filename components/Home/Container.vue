@@ -27,12 +27,12 @@
 <script>
 // Import axios
 import axios from 'axios'
-let APIurl = 'https://pixabay.com/api/?key=5832566-81dc7429a63c86e3b707d0429&q={SEARCH}&per_page=10&page=1'
+let APIurl = 'http://127.0.0.1:3333/api'
 
 export default {
     data() {
         return {
-            path: [{id: 0, title: "Home", password: "", type: "Folder"}],
+            path: [{id: 1, title: "Home", password: "", type: "Folder"}],
             folder: [],
             lockedModal: false,
             photoModal: false,
@@ -54,7 +54,7 @@ export default {
             this.path = this.path.slice(0, this.path.indexOf(f)+1)
             if (f.type == "Folder") {
                 this.$refs.Scene.startLoading(f);
-                await this.fetch_folder(f.title).then(res => {
+                await this.fetch_folder(`/folders/${f.id}`).then(res => {
                         setTimeout(() => {
                             this.$refs.Scene.endLoading(f);
                         }, 1000);
@@ -65,35 +65,45 @@ export default {
             }
         },
         async fetch_folder(url) {
-            console.log("Fetch folder", url)
-            if (url == "Home") {
-                this.folder = [
-                    {id: 1, title: "Blue", type: "Folder",password: "Azerty"},
-                    {id: 2, title: "Red", type: "Folder",password: ""},
-                    {id: 3, title: "Green", type: "Folder",password: ""},
-                    {id: 4, title: "Purple", type: "Folder",password: ""},
-                    {id: 5, title: "Orange", type: "Folder",password: ""},
-                    {id: 6, title: "Pink", type: "Folder",password: ""},
-                    {id: 7, title: "Black", type: "Folder",password: ""},
-                    {id: 8, title: "White", type: "Folder",password: ""},
-                    {id: 9, title: "Cyan", type: "Folder",password: ""},
-                    {id: 10, title: "Yellow", type: "Folder",password: ""},
-                ]
-            } else {
-                // Fetch with axios
-                await axios.get(APIurl.replace('{SEARCH}', url)).then(res => {
-                    console.log(res.data)
-                    this.folder = res.data.hits.map(e => {return {
+            console.log("Fetch folder", APIurl+url)
+            await axios.get(APIurl+url).then(res => {
+                console.log(res.data)
+                 if (res.data.images.data.length > 0 ) { // We have images
+                    const data = res.data.images.data
+                    this.folder = data.map(e => {return {
                         id: e.id,
-                        title:e.tags,
-                        data: e.largeImageURL,
-                        width: e.imageWidth,
-                        height: e.imageHeight,
+                        title: e.title,
+                        data: APIurl.replace('/api','')+e.data.url,
+                        width: 'e.imageWidth',
+                        height: 'e.imageHeight',
                         date: '04/12/2000',
                         size: 420,
-                        type: "image"}});
-                });
-            }
+                        type: "image"
+                    }});
+                } else { // We have subfolders
+                    const data = res.data.childs
+                    this.folder = data?.map(f => {
+                        return {
+                            id: f.id,
+                            title: f.name,
+                            type: "Folder",
+                            password: "",
+                        }
+                    })
+                    while(this.folder.length < 10) {
+                        this.folder.push({
+                            id: 0,
+                            title: "",
+                            data: "",
+                            width: 0,
+                            height: 0,
+                            date: "",
+                            size: 0,
+                            type: "Folder"
+                        })
+                    }
+                }
+            });
         },
         closeModal(s) {
             this.$refs.Scene.focusedFile = null;
@@ -126,9 +136,10 @@ export default {
     },
     mounted() {
         console.log('Fetching home...')
-        this.fetch_folder('Home').then(() => {
+        this.fetch_folder('/folders/1').then(() => {
             this.$refs.Scene.draw_Folder();
         })
+
         
     },
 

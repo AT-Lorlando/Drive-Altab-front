@@ -1,6 +1,7 @@
 <template>
     <div id="folderDisplay" class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12 bg-black"> 
-        <div v-for="(file, index) in currentPage" v-show="!focusedFile || focusedFile === file" :key="index" class="h-80 w-auto z-10 hover:cursor-pointer" @click="onClick(file, index)">
+        <div v-for="(file, index) in currentPage" v-show="!focusedFile || focusedFile === file" :key="index"
+         class="h-80 w-auto z-10 hover:cursor-pointer" @click="onClick(file, index)">
             <h2 class="break-normal text-white text-center uppercase text-xl absolute w-80">{{file.title}}</h2>
             <div :id="`scene${index}`" @mouseover="hover(file)" class="w-80 h-80"/>
         </div>
@@ -243,9 +244,9 @@ export default {
                 } else {
                     scene = new THREE.Scene();
                     scene.copy(defaultScene);
-                    console.log(scene)
                     const sceneElement = document.getElementById( `scene${index}` );
                     const sceneSize = sceneElement.getBoundingClientRect()
+                    console.log(sceneElement)
                     scene.userData.element = sceneElement;
                     scene.userData.size = sceneSize;
                     sceneElement.parentElement.addEventListener( 'mousemove', 
@@ -254,7 +255,9 @@ export default {
                     scenes.push( scene );
                 }
                 f.scene = scene
-                scene.add( folderMesh(f) );
+                if(f.title) {
+                    scene.add( folderMesh(f) );
+                }
             })
         },
         animate() {
@@ -293,7 +296,10 @@ export default {
                 scenes.forEach((s, index) => {
                     const element = s.userData.element;
                     // s.children[0].rotateOnAxis(new THREE.Vector3(0,1,0), 0.01);
-                    const obj = s.getObjectByName( 'toRotate' );	
+                    const obj = s.getObjectByName( 'toRotate' );
+                    if(!obj) {
+                        return;
+                    }	
                     // If obj is a group or a mesh
                     if ( obj.type === 'Group') {
                         obj.rotation.y =  Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
