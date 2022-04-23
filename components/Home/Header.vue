@@ -1,15 +1,21 @@
 <template>
     <div class="flex flex-row p-4 justify-between items-center w-full z-50">
-        <IconsMenu class="icons"/>
-        <MolleculesInputCommand class="pl-4"/>
-        <IconsBell class="icons"/>
+        <div class="flex flex-row space-x-10 pl-4">
+            <IconsMenu class="icons" @click="this.$router.push('home')"/>
+            <MolleculesInputCommand class="pl-4"/>
+        </div>
+        <!-- <IconsBell class="icons"/>
         <IconsAdd class="icons"/>
         <IconsView class="icons"/>
         <IconsRefresh class="icons"/>
-        <IconsAlarm class="icons"/>
-        <IconsUser class="icons"/>
-        <IconsGear class="icons"/>
-        <IconsExit class="icons"/>
+        <IconsAlarm class="icons"/> -->
+        <div class="flex flex-row space-x-4 items-center">
+            <AltabButton @click="this.$router.push('login')" class="w-40 self-center" Title="Se connecter" Color="black" Size="medium"/>
+            <AltabButton @click="this.$router.push('register')" class="w-40 self-center" Title="S'inscrire" Color="white" Size="medium"/>
+            <IconsUser class="icons"/>
+            <!-- <IconsGear class="icons"/> -->
+            <IconsExit class="icons"/>
+        </div>
     </div>
 </template>
 

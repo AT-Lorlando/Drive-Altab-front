@@ -1,7 +1,7 @@
 <template>
     <div id="folderDisplay" class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12 bg-black"> 
         <div v-for="(file, index) in currentPage" v-show="!focusedFile || focusedFile === file" :key="index"
-         class="h-80 w-auto z-10 hover:cursor-pointer" @click="onClick(file, index)">
+         :class="file.title ? 'h-80 w-auto z-10 hover:cursor-pointer' : 'h-80 w-auto z-10'" @click="onClick(file, index)">
             <h2 class="break-normal text-white text-center uppercase text-xl absolute w-80">{{file.title}}</h2>
             <div :id="`scene${index}`" @mouseover="hover(file)" class="w-80 h-80"/>
         </div>
@@ -327,6 +327,9 @@ export default {
             // console.log(f)
         },
         onClick(f,i) {
+            if(!f.title) {
+                return
+            }
             // Set the focused file to the file that was clicked, if it the same, than close
             this.focusedFile = this.focusedFile? null : f
             this.fileIndex = i

@@ -34,15 +34,18 @@ export default {
             }
         } else if (this.Size=="medium") {
             if (this.Color == 'black') {
-            return {
-                add_class: 'bg-black hover:bg-white text-white hover:text-black border hover:border-black hover:scale-105'
+                return {
+                    add_class: 'bg-black hover:bg-white text-white hover:text-black border hover:border-black hover:scale-105'
+                }
+            } else if (this.Color == 'transparent') {
+                return {
+                    add_class: 'bg-transparent hover:bg-black hover:text-white border border-black hover:border-white hover:scale-105'
+                }
+            } else if (this.Color == 'white') {
+                return {
+                    add_class: 'text-white bg-transparent hover:bg-white hover:text-black border border-black hover:border-white hover:scale-105'
+                }
             }
-        } else if (this.Color == 'transparent') {
-            return {
-                add_class: 'bg-transparent hover:bg-black hover:text-white border border-black hover:border-white hover:scale-10'
-            }
-        }
-
         }
     },
 }

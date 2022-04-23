@@ -30,6 +30,12 @@ import axios from 'axios'
 let APIurl = 'http://127.0.0.1:3333/api'
 
 export default {
+    props : {
+        searchedPath : {
+            type: Array,
+            default: []
+        },
+    },
     data() {
         return {
             path: [{id: 1, title: "Home", password: "", type: "Folder"}],
@@ -41,7 +47,9 @@ export default {
     },
     methods: {
         gotoFile(f) {
-            this.path.push(f)
+            if(f.title != "Home") {
+                this.path.push(f)
+            }
             if (f.password != "") {
                 this.lockedModal = true               
             }
@@ -51,7 +59,11 @@ export default {
             this.lockedModal = false
             this.photoModal = false
             console.log("Open", f)
-            this.path = this.path.slice(0, this.path.indexOf(f)+1)
+            if(this.path.length > 1) {
+                this.path = this.path.slice(0, this.path.lastIndexOf(f)+1)
+            } else {
+                this.path = [{id: 1, title: "Home", password: "", type: "Folder"}]
+            }
             if (f.type == "Folder") {
                 this.$refs.Scene.startLoading(f);
                 await this.fetch_folder(`/folders/${f.id}`).then(res => {
@@ -90,6 +102,7 @@ export default {
                             password: "",
                         }
                     })
+                    // TODO: Covering the cube with images
                     while(this.folder.length < 10) {
                         this.folder.push({
                             id: 0,
@@ -133,10 +146,34 @@ export default {
             this.gotoFile(f)
             this.$refs.Photo.setPhoto(f)
         },
+        async lookForPath() {
+            if(this.searchedPath.length > 0) {
+            let searchedFile = this.searchedPath[this.searchedPath.length-1]
+            console.log(this.searchedPath)
+            let FOLDERS = []
+            await axios.get(APIurl+'/folders').then(res => {
+                console.log(res)
+                FOLDERS = res.data
+                let f = FOLDERS.find(f => f.name.toLowerCase() == searchedFile.toLowerCase())
+                if(f) {
+                    let retFolder = {
+                        id: f.id,
+                        title: f.name,
+                        password: "",
+                        type : "Folder",
+                    }
+                    this.gotoFile(retFolder)
+                    this.$refs.Scene.draw_Folder();
+
+                }            
+            })
+        }
+        },
     },
     mounted() {
         console.log('Fetching home...')
-        this.fetch_folder('/folders/1').then(() => {
+        this.lookForPath()
+        this.fetch_folder(`/folders/${this.path[0].id}`).then(() => {
             this.$refs.Scene.draw_Folder();
         })
 
