@@ -24,7 +24,7 @@
     </div>
 </template>
 
-<script>
+<script lang="js">
 // Import axios
 import axios from 'axios'
 let APIurl = 'http://127.0.0.1:3333/api'

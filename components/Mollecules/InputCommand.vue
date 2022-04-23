@@ -1,3 +1,11 @@
+
+<script setup>
+    const $router = useRouter()
+    function search (e) {
+        $router.push(e.target[0].value)
+    }
+</script>
+
 <template>
     <div class="flex flex-row justify-center text-white items-center py-2 px-3 rounded-2xl border-2 border-white space-x-2">
         <IconsSearch class="w-8 h-8" />
@@ -7,14 +15,3 @@
         <p>(Ctrl+K)</p>
     </div>
 </template>
-
-<script>
-export default {
-    methods: {
-        search (e) {
-                this.$router.push(e.target[0].value)
-            }
-        }
-    }
-
-</script>
