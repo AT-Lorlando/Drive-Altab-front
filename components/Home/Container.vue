@@ -38,7 +38,7 @@ export default {
     },
     data() {
         return {
-            path: [{id: 1, title: "Home", password: "", type: "Folder"}],
+            path: [],
             folder: [],
             lockedModal: false,
             photoModal: false,
@@ -112,7 +112,7 @@ export default {
                             height: 0,
                             date: "",
                             size: 0,
-                            type: "Folder"
+                            type: "fill"
                         })
                     }
                 }
@@ -147,37 +147,31 @@ export default {
             this.$refs.Photo.setPhoto(f)
         },
         async lookForPath() {
-            if(this.searchedPath.length > 0) {
             let searchedFile = this.searchedPath[this.searchedPath.length-1]
-            console.log(this.searchedPath)
-            let FOLDERS = []
-            await axios.get(APIurl+'/folders').then(res => {
-                console.log(res)
-                FOLDERS = res.data
-                let f = FOLDERS.find(f => f.name.toLowerCase() == searchedFile.toLowerCase())
-                if(f) {
-                    let retFolder = {
-                        id: f.id,
-                        title: f.name,
-                        password: "",
-                        type : "Folder",
-                    }
-                    this.gotoFile(retFolder)
+            if(searchedFile && searchedFile?.id != 1) {
+                axios.get(APIurl+'/folders').then(res => {
+                    let folder = res.data.find(f => f.name.toLowerCase() == searchedFile.toLowerCase())
+                    if(folder) {
+                        this.path = [{id: folder.id, title: folder.name, password: "", type: "Folder",}]
+                        console.log("Draw ", folder)
+                        this.fetch_folder(`/folders/${this.path[0].id}`).then(() => {
+                            this.$refs.Scene.draw_Folder();
+                        })   
+                    }            
+                })
+            } else {
+                console.log("No path to look for")
+                console.log("Draw home")
+                this.path = [{id: 1, title: "Home", password: "", type: "Folder"}]
+                this.fetch_folder(`/folders/${this.path[0].id}`).then(() => {
                     this.$refs.Scene.draw_Folder();
-
-                }            
-            })
-        }
+                })   
+            }
         },
     },
     mounted() {
-        console.log('Fetching home...')
-        this.lookForPath()
-        this.fetch_folder(`/folders/${this.path[0].id}`).then(() => {
-            this.$refs.Scene.draw_Folder();
-        })
-
-        
+        console.log('Mounted')
+        this.lookForPath()        
     },
 
 }

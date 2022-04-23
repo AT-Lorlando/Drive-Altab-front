@@ -229,11 +229,14 @@ export default {
         draw_Folder() {
             console.log("Draw folder", this.currentPage)
             this.currentPage.forEach((f, index) => {
+                console.log(f.type)
                 let scene
                 if (scenes[index]) {
                     scene = scenes[index]
                     const obj = scene.getObjectByName( 'toRotate' );
                     const sceneElement = document.getElementById( `scene${index}` );
+                    // console.log(sceneElement)
+                    
                     scene.userData.element = sceneElement;	
                     const sceneSize = scene.userData.size                    
                     sceneElement.parentElement.addEventListener( 'mousemove', 
@@ -255,9 +258,10 @@ export default {
                     scenes.push( scene );
                 }
                 f.scene = scene
-                if(f.title) {
+                if(f.type !=  "fill") {
                     scene.add( folderMesh(f) );
                 }
+                // console.log(scene)
             })
         },
         animate() {
@@ -294,32 +298,30 @@ export default {
                 starsGeometry.setAttribute("position", new THREE.Float32BufferAttribute(tempStarsArray, 3));
             } else {
                 scenes.forEach((s, index) => {
-                    const element = s.userData.element;
-                    // s.children[0].rotateOnAxis(new THREE.Vector3(0,1,0), 0.01);
                     const obj = s.getObjectByName( 'toRotate' );
-                    if(!obj) {
-                        return;
+                    if(obj) {
+                        // If obj is a group or a mesh
+                        if ( obj.type === 'Group') {
+                            obj.rotation.y =  Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
+                        } else if ( obj.type === 'Mesh') {
+                            obj.rotation.y =  Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.5;
+                        }
+                        // s.children[0].rotation.y = Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
+                        // s.children[0].rotation.y = -Math.cos(t) * Math.PI/2 * 0.75;
+                        const camera = s.getObjectByName( 'camera' );
+                        const rect = s.userData.size;
+                        // set the viewport
+                        const width = rect.right - rect.left;
+                        const height = rect.bottom - rect.top;
+                        const left = rect.left;
+                        const bottom = renderer.domElement.clientHeight - rect.bottom;
+                        renderer.setViewport( left, bottom, width, height );
+                        renderer.setScissor( left, bottom, width, height );
+                        // camera.position.y = Math.cos( t + index ) *0.8  ;
+                        camera.lookAt( 0,0,0 );
+                        renderer.render( s, camera );
+                        
                     }	
-                    // If obj is a group or a mesh
-                    if ( obj.type === 'Group') {
-                        obj.rotation.y =  Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
-                    } else if ( obj.type === 'Mesh') {
-                        obj.rotation.y =  Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.5;
-                    }
-                    // s.children[0].rotation.y = Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
-                    // s.children[0].rotation.y = -Math.cos(t) * Math.PI/2 * 0.75;
-                    const camera = s.getObjectByName( 'camera' );
-                    const rect = element.getBoundingClientRect();
-                    // set the viewport
-                    const width = rect.right - rect.left;
-                    const height = rect.bottom - rect.top;
-                    const left = rect.left;
-                    const bottom = renderer.domElement.clientHeight - rect.bottom;
-                    renderer.setViewport( left, bottom, width, height );
-                    renderer.setScissor( left, bottom, width, height );
-                    // camera.position.y = Math.cos( t + index ) *0.8  ;
-                    camera.lookAt( 0,0,0 );
-                    renderer.render( s, camera );
                 })
             }            
         },
@@ -356,6 +358,7 @@ export default {
         },
     },
     mounted() {
+        console.log("Sub mounted")
         canvas = this.$refs.canvas
         this.init()
         this.animate()
