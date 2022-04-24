@@ -159,13 +159,23 @@ async function lookForPath() {
   let searchedFile = props.searchedPath[props.searchedPath.length - 1];
   if (searchedFile && searchedFile?.id != 1) {
     await axios.get(APIurl + "/folders").then((res) => {
-      let folder = res.data.find(
-        (f) => f.name.toLowerCase() == searchedFile.toLowerCase()
+      let pack = res.data.find(
+        (f) => f.folder.name.toLowerCase() == searchedFile.toLowerCase()
       );
+      let folderPath = pack.path
+      let folder = pack.folder
       if (folder) {
-        path.value = [{ id: folder.id, title: folder.name, password: "", type: "Folder" }];
+          path.value = folderPath.map((f) => {
+            return {
+              id: f.id,
+              title: f.name,
+              password: "",
+              type: "Folder",
+            };
+          });
+        path.value.push({ id: folder.id, title: folder.name, password: "", type: "Folder" });
         console.log("Draw ", folder);
-        fetch_folder(`/folders/${path.value[0].id}`).then(() => {});
+        fetch_folder(`/folders/${folder.id}`).then(() => {});
       }
     });
   } else {

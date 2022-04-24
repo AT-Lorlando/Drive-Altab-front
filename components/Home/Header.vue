@@ -1,7 +1,6 @@
 <template>
     <div class="flex flex-row p-4 justify-between items-center w-full z-50">
         <div class="flex flex-row space-x-10 pl-4">
-            <IconsMenu class="icons" @click="this.$router.push('/')" />
             <MolleculesInputCommand class="pl-4"/>
         </div>
         <!-- <IconsBell class="icons"/>

@@ -1,6 +1,6 @@
 <template>
     <button 
-        :class="`transition-colors duration-300 ease-in transform  w-20 rounded-xl hover:cursor-pointer px-2 h-12 ${add_class}`">
+        :class="`transition-colors duration-300 ease-in transform rounded-xl hover:cursor-pointer px-2 h-12 ${add_class}`">
 
         {{Title}}
     </button>
