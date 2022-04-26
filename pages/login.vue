@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col pt-40 w-full h-screen text-white">
+  <div class="flex flex-col pt-40 w-full h-screen text-white bg-black z-50">
     <form @submit.prevent="login" class="flex flex-col w-full max-w-xl mx-auto">
       <h1 class="text-4xl w-full text-center mb-3">Se connecter</h1>
 
@@ -24,6 +24,8 @@
 <script>
 import axios from 'axios'
 let APIurl = 'http://127.0.0.1:3333/api'
+// const { $store } = useNuxtApp()
+
 
 export default {
   data() {
@@ -35,14 +37,26 @@ export default {
   },
   methods: {
     login() {
+        console.log('Try to log')
+      // document event to say that the user is logged
       axios.post(APIurl+'/login', {
         email: this.email,
         password: this.password,
         remember: this.remember,
       })
       .then(response => {
-        console.log(response)
-        
+        console.log('Try to log', response.status)
+        if(response.status === 200) {
+          console.log('Login...', response)
+          let user = response.data.user
+          localStorage.setItem('isLogged', true)
+          localStorage.setItem('user.name', user.first_name)
+          localStorage.setItem('user.id', user.id)
+          this.$router.push('/')
+          document.dispatchEvent(new Event('session-change'))
+        }        
+      }).catch(error => {
+        console.log('Try to log', error)
       })
     }
   }

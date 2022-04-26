@@ -4,7 +4,7 @@ import { ref, onMounted, inject, watch } from "vue";
 import * as THREE from "three";
 import img from "../../assets/imgs/img.png";
 let renderer, controls, size, clock, cameraGlobal;
-let canvas = ref(null);
+let canvas
 const scenes = [];
 const defaultScene = new THREE.Scene();
 const mouse = new THREE.Vector2();
@@ -414,10 +414,11 @@ function endLoading(f) {
 }
 
 onMounted(() => {
-  console.log("Sub mounted", document.getElementById(`scene${0}`));
-  init();
-  animate();
-  folderDisplay = document.getElementById("folderDisplay");
+    canvas = document.getElementById(`threecanvas`);
+    console.log("Sub mounted",canvas, document.getElementById(`scene${0}`));
+    init();
+    animate();
+    folderDisplay = document.getElementById("folderDisplay");
 });
 </script>
 
@@ -427,16 +428,16 @@ onMounted(() => {
     class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12 bg-black"
   >
     <li
-      v-for="(file, index) in folder"
+      v-for="index in 10"
       ref="sceneRefs"
       v-show="!focusedFile || focusedFile === file"
-      :class="file.title ? 'h-80 w-auto z-10 hover:cursor-pointer' : 'h-80 w-auto z-10'"
-      @click="onClick(file, index)"
+      :class="folder[index]?.title ? 'h-80 w-auto z-10 hover:cursor-pointer' : 'h-80 w-auto z-10'"
+      @click="onClick(folder[index], index)"
     >
       <h2 class="break-normal text-white text-center uppercase text-xl absolute w-80">
-        {{ file.title }}
+        {{ folder[index]?.title }}
       </h2>
-      <div :id="`scene${index}`" @mouseover="hover(file)" class="w-80 h-80" />
+      <div :id="`scene${index-1}`" @mouseover="hover(folder[index])" class="w-80 h-80" />
     </li>
   </ul>
 </template>

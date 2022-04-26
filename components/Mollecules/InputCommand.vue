@@ -2,7 +2,14 @@
 <script setup>
     const $router = useRouter()
     function search (e) {
-        $router.push(e.target[0].value)
+        let search = e.target[0].value
+        if(search.toLowerCase() != 'home') {
+            $router.push(e.target[0].value)
+        } else {
+            $router.push('/')
+            // reload
+            window.location.reload()
+        }
     }
 </script>
 
