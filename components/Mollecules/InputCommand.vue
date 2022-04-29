@@ -7,8 +7,6 @@
             $router.push(e.target[0].value)
         } else {
             $router.push('/')
-            // reload
-            window.location.reload()
         }
     }
 </script>

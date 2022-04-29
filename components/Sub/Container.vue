@@ -1,10 +1,9 @@
 <script setup>
-import { ref, onMounted, inject, watch } from "vue";
-// Three js init
+import { ref, onMounted, onUnmounted } from "vue";
 import * as THREE from "three";
 import img from "../../assets/imgs/img.png";
 let renderer, controls, size, clock, cameraGlobal;
-let canvas
+let canvas, ID 
 const scenes = [];
 const defaultScene = new THREE.Scene();
 const mouse = new THREE.Vector2();
@@ -82,107 +81,6 @@ class Star {
   }
 }
 
-function onMouseMove(event, size, camera) {
-  mouse.x = (event.clientX - size.x) / size.width - 0.5;
-  mouse.y = (event.clientY - size.y) / size.height - 0.5;
-
-  camera.position.x += (mouse.x * 2 - camera.position.x) * 0.05;
-  camera.position.y += (-mouse.y * 2 - camera.position.y) * 0.05;
-}
-
-function folderMesh(f) {
-  if (f.type === "Folder") {
-    // add 8 plane forming a cube
-    const cube = new THREE.Group();
-    for (let i = 0; i < 6; i++) {
-      const mesh = new THREE.Mesh(geometryCube, material);
-      mesh.position.x = POS[i].x;
-      mesh.position.y = POS[i].y;
-      mesh.position.z = POS[i].z + 0.5;
-
-      mesh.rotation.x = POS[i].rx;
-      mesh.rotation.y = POS[i].ry;
-      mesh.rotation.z = POS[i].rz;
-      cube.add(mesh);
-    }
-    cube.name = "toRotate";
-    return cube;
-  } else {
-    // Add a plane facing the camera
-    const new_texture = new THREE.TextureLoader().load(f.data);
-    const new_material = new THREE.MeshBasicMaterial({
-      map: new_texture,
-      side: THREE.DoubleSide,
-    });
-    const mesh = new THREE.Mesh(geometryPlane, new_material);
-    mesh.position.x = 0;
-    mesh.position.y = 0;
-    mesh.position.z = 0;
-    mesh.name = "toRotate";
-    return mesh;
-  }
-}
-
-// Vue component
-
-const props = defineProps({
-  currentPage: {
-    type: Array[10],
-    default: [],
-  },
-  gotoFile: {
-    type: Function,
-    default: () => {},
-  },
-});
-
-// files: currentPage,
-let focusedFile = null;
-let fileIndex = null;
-let folderDisplay = null; // The element used to display the folder
-const folder = inject("folder");
-fillFolder();
-const sceneRefs = ref([]);
-
-console.log("folder", folder.value);
-
-watch(folder, async (newFolder, oldFolder) => {
-  console.log("%cNew folder watched, draw it", "color: red; font-size: 20px");
-  console.log(focusedFile, folder);
-  fileIndex = oldFolder.indexOf(focusedFile);
-  if (!focusedFile) {
-    draw_Folder();
-  } else {
-    startLoading(focusedFile);
-  }
-});
-
-// watch(isLoading, async (newFlag, oldFlag) => {
-//   console.log(
-//     "%cNew flag watched, draw it",
-//     "color: red; font-size: 20px",
-//     isLoading.value
-//   );
-//   if (newFlag) {
-
-//   }
-// });
-
-function fillFolder() {
-  while (folder.value.length < 10) {
-    folder.value.push({
-      id: 0,
-      title: "",
-      data: "",
-      width: 0,
-      height: 0,
-      date: "",
-      size: 0,
-      type: "fill",
-    });
-  }
-}
-
 function init() {
   canvas = document.getElementById(`threecanvas`);
   size = canvas.getBoundingClientRect();
@@ -250,57 +148,51 @@ function init() {
   defaultScene.add(light);
 }
 
-function draw_Folder() {
-  fillFolder();
-  focusedFile = null;
-  console.log("%cDraw folder", "color: red; font-size: 20px", folder);
-  console.log("Draw folder", folder.value);
-  console.log(sceneRefs);
-  folder.value.forEach((f, index) => {
-    console.log(f.type);
-    let scene;
-    if (scenes[index]) {
-      scene = scenes[index];
-      const obj = scene.getObjectByName("toRotate");
-      const sceneElement = document.getElementById(`scene${index}`);
-      // console.log(sceneElement)
+function onMouseMove(event, size, camera) {
+  mouse.x = (event.clientX - size.x) / size.width - 0.5;
+  mouse.y = (event.clientY - size.y) / size.height - 0.5;
 
-      scene.userData.element = sceneElement;
-      const sceneSize = scene.userData.size;
-        sceneElement?.parentElement.addEventListener("mousemove", () => {
-          !focusedFile
-            ? onMouseMove(event, sceneSize, scene.getObjectByName("camera"))
-            : "";
-        });
-      if (obj) {
-        scene.remove(obj);
-      }
-    } else {
-      scene = new THREE.Scene();
-      scene.copy(defaultScene);
-      const sceneElement = document.getElementById(`scene${index}`);
-      const sceneSize = sceneElement.getBoundingClientRect();
-      console.log(sceneElement);
-      scene.userData.element = sceneElement;
-      scene.userData.size = sceneSize;
-      sceneElement.parentElement.addEventListener("mousemove", () => {
-        !focusedFile
-          ? onMouseMove(event, sceneSize, scene.getObjectByName("camera"))
-          : "";
-      });
+  camera.position.x += (mouse.x * 2 - camera.position.x) * 0.05;
+  camera.position.y += (-mouse.y * 2 - camera.position.y) * 0.05;
+}
 
-      scenes.push(scene);
+function folderMesh(f) {
+  console.log("Folder mesh")
+  console.log(f)
+  if (f.type === "Folder") {
+    // add 8 plane forming a cube
+    const cube = new THREE.Group();
+    for (let i = 0; i < 6; i++) {
+      const mesh = new THREE.Mesh(geometryCube, material);
+      mesh.position.x = POS[i].x;
+      mesh.position.y = POS[i].y;
+      mesh.position.z = POS[i].z + 0.5;
+
+      mesh.rotation.x = POS[i].rx;
+      mesh.rotation.y = POS[i].ry;
+      mesh.rotation.z = POS[i].rz;
+      cube.add(mesh);
     }
-    f.scene = scene;
-    if (f.type != "fill") {
-      scene.add(folderMesh(f));
-    }
-    // console.log(scene)
-  });
+    cube.name = "toRotate";
+    return cube;
+  } else {
+    // Add a plane facing the camera
+    const new_texture = new THREE.TextureLoader().load(`http://localhost:3333${f.data.url}`);
+    const new_material = new THREE.MeshBasicMaterial({
+      map: new_texture,
+      side: THREE.DoubleSide,
+    });
+    const mesh = new THREE.Mesh(geometryPlane, new_material);
+    mesh.position.x = 0;
+    mesh.position.y = 0;
+    mesh.position.z = 0;
+    mesh.name = "toRotate";
+    return mesh;
+  }
 }
 
 function animate() {
-  requestAnimationFrame(animate);
+  ID = requestAnimationFrame(animate);
   render();
 }
 
@@ -368,6 +260,125 @@ function render() {
   }
 }
 
+function draw_Folder() {
+  focusedFile = null;
+  console.log("%cDraw folder", "color: red; font-size: 20px", props.folder);
+  console.log("Draw folder", props.folder);
+  props.folder.forEach((f, index) => {
+    console.log(f.type);
+    let scene;
+    if (scenes[index]) {
+      scene = scenes[index];
+      const obj = scene.getObjectByName("toRotate");
+
+      
+      const sceneElement = document.getElementById(`scene${index}`);
+      // console.log(sceneElement)
+
+      scene.userData.element = sceneElement;
+      const sceneSize = scene.userData.size;
+        sceneElement?.parentElement.addEventListener("mousemove", () => {
+          !focusedFile
+            ? onMouseMove(event, sceneSize, scene.getObjectByName("camera"))
+            : "";
+        });
+      if (obj) {
+        scene.remove(obj);
+      }
+    } else {
+      scene = new THREE.Scene();
+      scene.copy(defaultScene);
+      const sceneElement = document.getElementById(`scene${index}`);
+      const sceneSize = sceneElement.getBoundingClientRect();
+      console.log(sceneElement);
+      scene.userData.element = sceneElement;
+      scene.userData.size = sceneSize;
+      sceneElement.parentElement.addEventListener("mousemove", () => {
+        !focusedFile
+          ? onMouseMove(event, sceneSize, scene.getObjectByName("camera"))
+          : "";
+      });
+
+      scenes.push(scene);
+    }
+    f.scene = scene;
+    if (f.type != "fill") {
+      scene.add(folderMesh(f));
+    }
+    // console.log(scene)
+  });
+}
+
+// Vue component
+
+// const props = defineProps({
+//   currentPage: {
+//     type: Array[10],
+//     default: [],
+//   },
+//   gotoFile: {
+//     type: Function,
+//     default: () => {},
+//   },
+// });
+
+// files: currentPage,
+let focusedFile = null;
+let fileIndex = null;
+let folderDisplay = null; // The element used to display the folder
+
+const props = defineProps({
+  folder: {
+    type: Array,
+    default: [],
+  },
+});
+
+const emit = defineEmits(['sceneClick'])
+
+// const folder = ref([]);
+// fillFolder();
+const sceneRefs = ref([]);
+
+// console.log("folder", folder.value);
+
+// watch(folder, async (newFolder, oldFolder) => {
+//   console.log("%cNew folder watched, draw it", "color: red; font-size: 20px");
+//   console.log(focusedFile, folder);
+//   fileIndex = oldFolder.indexOf(focusedFile);
+//   if (!focusedFile) {
+//     draw_Folder();
+//   } else {
+//     startLoading(focusedFile);
+//   }
+// });
+
+// watch(isLoading, async (newFlag, oldFlag) => {
+//   console.log(
+//     "%cNew flag watched, draw it",
+//     "color: red; font-size: 20px",
+//     isLoading.value
+//   );
+//   if (newFlag) {
+
+//   }
+// });
+
+function fillFolder() {
+  while (folder.value.length < 10) {
+    folder.value.push({
+      id: 0,
+      title: "",
+      data: "",
+      width: 0,
+      height: 0,
+      date: "",
+      size: 0,
+      type: "fill",
+    });
+  }
+}
+
 function hover(f) {
   // console.log(f)
 }
@@ -414,11 +425,17 @@ function endLoading(f) {
 }
 
 onMounted(() => {
-    canvas = document.getElementById(`threecanvas`);
-    console.log("Sub mounted",canvas, document.getElementById(`scene${0}`));
+  console.log("Three container mounted")
+  console.log(props.folder)
+    // canvas = document.getElementById(`threecanvas`);
+    folderDisplay = document.getElementById("folderDisplay");
     init();
     animate();
-    folderDisplay = document.getElementById("folderDisplay");
+    draw_Folder();
+});
+
+onUnmounted(() => {
+  cancelAnimationFrame(ID)
 });
 </script>
 
@@ -427,17 +444,11 @@ onMounted(() => {
     id="folderDisplay"
     class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12 bg-black"
   >
-    <li
-      v-for="index in 10"
-      ref="sceneRefs"
-      v-show="!focusedFile || focusedFile === file"
-      :class="folder[index]?.title ? 'h-80 w-auto z-10 hover:cursor-pointer' : 'h-80 w-auto z-10'"
-      @click="onClick(folder[index], index)"
-    >
-      <h2 class="break-normal text-white text-center uppercase text-xl absolute w-80">
-        {{ folder[index]?.title }}
-      </h2>
-      <div :id="`scene${index-1}`" @mouseover="hover(folder[index])" class="w-80 h-80" />
+    <li v-for="(f,index) in props.folder" @click="$emit('sceneClick', index)" class="text-white text-xl z-10 hover:cursor-pointer">
+      {{f.name || f.title}}
+      <div :id="`scene${index}`" class="w-80 h-80">
+      
+      </div>
     </li>
   </ul>
 </template>
