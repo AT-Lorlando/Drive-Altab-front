@@ -6,7 +6,6 @@
     </p>
 
     <SubPath 
-      :path="actualPath?.value"
       @pathClick="onPathClick"
     />
 
@@ -65,8 +64,13 @@ const baseURL = 'http://127.0.0.1:3333/api'
 const showPhotoModal = ref(false)
 const showLockedModal = ref(false)
 const photoDisplayed = ref(null)
-const actualPath = ref()
+const actualPath = ref([{
+  name: 'Home',
+  id: 1,
+}])
 const folderID = ref(props.folderIDSearched)
+
+provide('path', actualPath)
 
 console.log('folderID', folderID.value)
 // const { data: folderData, pending, refresh, error } = await useLazyFetch(`/folders/${folderID.value}`, { baseURL: baseURL },() => '')
@@ -116,9 +120,7 @@ watch(folderData, (newfolderData) => {
   }
 
   actualPath.value = folderData.value.path ? folderData.value.path : []
-  actualPath.value.push(folderData.value.folder)
-  console.log("actualPath")
-  console.log(actualPath.value)
+  actualPath.value.reverse()
 })
 
 /* Function to handle the click on a scene, wich represent a file or a subfolder.
