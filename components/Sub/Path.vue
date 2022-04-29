@@ -8,26 +8,8 @@
 
 <script setup>
 
-// const props = defineProps({
-//   path: {
-//     type: Array,
-//     default: () => [{
-//       name: 'Home',
-//       type: 'Folder',
-//       path: '/',
-//       isLocked: false,
-//       id: 1,
-//     }],
-//   }
-// })
 const path = inject('path')
-
 const emit = defineEmits(['pathClick'])
-
-onMounted(() => {
-  console.log("Path mounted")
-  console.log(path)
-})
 
 </script>
 

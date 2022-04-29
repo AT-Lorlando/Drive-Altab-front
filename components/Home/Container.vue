@@ -69,46 +69,13 @@ const actualPath = ref([{
   id: 1,
 }])
 const folderID = ref(props.folderIDSearched)
-
 provide('path', actualPath)
-
-console.log('folderID', folderID.value)
-// const { data: folderData, pending, refresh, error } = await useLazyFetch(`/folders/${folderID.value}`, { baseURL: baseURL },() => '')
-
-// let x = () => {return `/folders/${folderID.value}`}
-// const { data:folderData, pending, refresh, error } = await useLazyFetch(x, { baseURL: baseURL }
-// );
-
 const page = ref(1);
-
-// const { data:folderData, loading, refresh, error } = await useFetch(() => `users?page=${page.value}&take=6`, { baseURL: baseURL }
-// );
-
 const { pending, data: folderData, refresh, error } = useLazyAsyncData('count', () => $fetch(`${baseURL}/folders/${folderID.value}`))
 
-// function previous(){
-//   page.value--;
-//   refresh();
-// }
 
-
-// const { data:folderData, pending, refresh, error } = await useLazyFetch(
-//   () => `/folders/${folderID.value}`, 
-//   { baseURL: baseURL }
-// )
-
-console.log(useFetch(() => `/folders/${folderID.value}`, { baseURL: baseURL }))
-console.log(useFetch(`/folders/${folderID.value}`, { baseURL: baseURL }))
-console.log(useLazyFetch(`/folders/${folderID.value}`, { baseURL: baseURL }))
-// console.log(error)
-
-
+// Watch on folderData, to add the type on each element and update the path
 watch(folderData, (newfolderData) => {
-  console.log('New folder data', folderID.value)
-  console.log(newfolderData)
-  console.log("Rendering three with")
-  console.log(folderData?.value?.childs?.length > 0 ? folderData?.value?.childs : folderData?.value?.images.data)
-
   if (newfolderData.childs.length > 0) {
     folderData.value.childs.forEach(element => {
       element.type = 'Folder'
