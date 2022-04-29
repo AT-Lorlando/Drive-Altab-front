@@ -39,36 +39,43 @@ export default {
     },
   },
   data() {
+    let add_class = "";
     if (this.Size == "small") {
       if (this.Color == "black") {
-        return {
-          add_class:
-            "bg-black hover:bg-opacity-0 text-white hover:text-black border hover:border-black hover:scale-110",
-        };
+          add_class+=
+            "bg-black hover:bg-opacity-0 text-white hover:text-black border hover:border-black hover:scale-110 "
       } else if (this.Color == "transparent") {
-        return {
-          add_class:
-            "bg-transparent hover:bg-black hover:text-white border border-black hover:border-white hover:scale-110",
-        };
+          add_class+=
+            "bg-transparent hover:bg-black hover:text-white border border-black hover:border-white hover:scale-110 "
       }
     } else if (this.Size == "medium") {
+      add_class += "w-40 "
       if (this.Color == "black") {
-        return {
-          add_class:
-            "w-40 bg-black hover:bg-white text-white hover:text-black border hover:border-black hover:scale-105",
-        };
+          add_class+=
+            "bg-black hover:bg-white text-white hover:text-black border hover:border-black hover:scale-105 "
       } else if (this.Color == "transparent") {
-        return {
-          add_class:
-            "w-40 bg-transparent hover:bg-black hover:text-white border border-black hover:border-white hover:scale-105",
-        };
+          add_class+=
+            "bg-transparent hover:bg-black hover:text-white border border-black hover:border-white hover:scale-105 "
       } else if (this.Color == "white") {
-        return {
-          add_class:
-            "w-40 text-white bg-transparent hover:bg-white hover:text-black border border-black hover:border-white hover:scale-105",
-        };
+          add_class+=
+            "text-white bg-transparent hover:bg-white hover:text-black border border-black hover:border-white hover:scale-105 "
       }
-
+    }
+    else if (this.Size == "large") {
+      add_class += "w-80 "
+      if (this.Color == "black") {
+          add_class+=
+            "bg-black hover:bg-white text-white hover:text-black border hover:border-black hover:scale-105 "
+      } else if (this.Color == "transparent") {
+          add_class+=
+            "bg-transparent hover:bg-black hover:text-white border border-black hover:border-white hover:scale-105 "
+      } else if (this.Color == "white") {
+          add_class+=
+            "text-white bg-transparent hover:bg-white hover:text-black border border-black hover:border-white hover:scale-105 "
+      }
+    }
+    return {
+      add_class: add_class
     }
   },
 };

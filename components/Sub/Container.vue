@@ -1,5 +1,4 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
 import * as THREE from "three";
 import img from "../../assets/imgs/img.png";
 let renderer, controls, size, clock, cameraGlobal;
@@ -203,8 +202,8 @@ function render() {
   let t = clock.getElapsedTime();
   // renderer.setClearColor( 0x000000 );
   // renderer.setScissorTest( true );
-  if (focusedFile) {
-    const scene = scenes[fileIndex];
+  if (focusedFile?.value) {
+    const scene = scenes[props.folder.indexOf(focusedFile?.value)];
     const obj = scene.getObjectByName("toRotate");
     obj.rotation.y = ((Math.cos(t / 4 + Math.PI / 2) * Math.PI) / 2) * 0.5;
 
@@ -261,7 +260,6 @@ function render() {
 }
 
 function draw_Folder() {
-  focusedFile = null;
   console.log("%cDraw folder", "color: red; font-size: 20px", props.folder);
   console.log("Draw folder", props.folder);
   props.folder.forEach((f, index) => {
@@ -278,7 +276,7 @@ function draw_Folder() {
       scene.userData.element = sceneElement;
       const sceneSize = scene.userData.size;
         sceneElement?.parentElement.addEventListener("mousemove", () => {
-          !focusedFile
+          !focusedFile.value
             ? onMouseMove(event, sceneSize, scene.getObjectByName("camera"))
             : "";
         });
@@ -294,7 +292,7 @@ function draw_Folder() {
       scene.userData.element = sceneElement;
       scene.userData.size = sceneSize;
       sceneElement.parentElement.addEventListener("mousemove", () => {
-        !focusedFile
+        !focusedFile.value
           ? onMouseMove(event, sceneSize, scene.getObjectByName("camera"))
           : "";
       });
@@ -311,19 +309,7 @@ function draw_Folder() {
 
 // Vue component
 
-// const props = defineProps({
-//   currentPage: {
-//     type: Array[10],
-//     default: [],
-//   },
-//   gotoFile: {
-//     type: Function,
-//     default: () => {},
-//   },
-// });
-
-// files: currentPage,
-let focusedFile = null;
+const focusedFile = inject('focusedFile');
 let fileIndex = null;
 let folderDisplay = null; // The element used to display the folder
 
@@ -336,48 +322,6 @@ const props = defineProps({
 
 const emit = defineEmits(['sceneClick'])
 
-// const folder = ref([]);
-// fillFolder();
-const sceneRefs = ref([]);
-
-// console.log("folder", folder.value);
-
-// watch(folder, async (newFolder, oldFolder) => {
-//   console.log("%cNew folder watched, draw it", "color: red; font-size: 20px");
-//   console.log(focusedFile, folder);
-//   fileIndex = oldFolder.indexOf(focusedFile);
-//   if (!focusedFile) {
-//     draw_Folder();
-//   } else {
-//     startLoading(focusedFile);
-//   }
-// });
-
-// watch(isLoading, async (newFlag, oldFlag) => {
-//   console.log(
-//     "%cNew flag watched, draw it",
-//     "color: red; font-size: 20px",
-//     isLoading.value
-//   );
-//   if (newFlag) {
-
-//   }
-// });
-
-function fillFolder() {
-  while (folder.value.length < 10) {
-    folder.value.push({
-      id: 0,
-      title: "",
-      data: "",
-      width: 0,
-      height: 0,
-      date: "",
-      size: 0,
-      type: "fill",
-    });
-  }
-}
 
 function hover(f) {
   // console.log(f)
@@ -385,43 +329,15 @@ function hover(f) {
 
 function onClick(f, i) {
   console.log("I HAVE CLICKED");
-  if (!f.title || focusedFile) {
-    console.log("BUT NOTHING");
-
-    return;
-  } // Set the focused file to the file that was clicked, if it the same, than close
+  emit('sceneClick', i)
+  // Set the focused file to the file that was clicked, if it the same, than close
   // focusedFile = focusedFile? null : f
   // document.getElementById("folderDisplay").style.display = "none";
-  // folderDisplay.style.visibility = "hidden";
+  folderDisplay.style.visibility = "hidden";
   // const element = f.scene.userData.element
   // element.parentElement.classList.toggle('hover:cursor-pointer')
   fileIndex = i;
-  focusedFile = f;
-  props.gotoFile(f);
-}
-
-function startLoading(f) {
-  folderDisplay.style.visibility = "hidden";
-
-  const scene = f?.scene;
-  scene?.add(galaxyPoints);
-
-  setTimeout(() => {
-    endLoading(f);
-  }, 1500);
-}
-
-function endLoading(f) {
-  const scene = f?.scene;
-  scene?.remove(galaxyPoints);
-  POS_MAX = INITIAL_POS;
-  // focusedFile = f.title=="Home"? null : f
-  // document.getElementById("folderDisplay").style.display = "";
-  folderDisplay.style.visibility = "visible";
-  if (focusedFile) {
-    draw_Folder();
-  }
-  focusedFile = null;
+  // focusedFile = f;
 }
 
 onMounted(() => {
@@ -444,7 +360,7 @@ onUnmounted(() => {
     id="folderDisplay"
     class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12 bg-black"
   >
-    <li v-for="(f,index) in props.folder" @click="$emit('sceneClick', index)" class="text-white text-xl z-10 hover:cursor-pointer">
+    <li v-for="(f,index) in props.folder" @click="onClick(f, index)" class="text-white text-xl z-10 hover:cursor-pointer">
       {{f.name || f.title}}
       <div :id="`scene${index}`" class="w-80 h-80">
       
