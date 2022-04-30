@@ -1,7 +1,8 @@
 <template>
-  <div
-    class="flex flex-col items-center w-4/5 h-screen m-auto text-white md:w-3/5 lg:w-2/5 z-20"
+  <KinesisContainer
+    class="w-full h-full z-20 overflow-clip"
   >
+  <KinesisElement class="flex flex-col items-center w-4/5 h-full m-auto text-white md:w-3/5 lg:w-2/5 " :strength="4" type="depth">
     <!-- <h3 class="mt-32 Text"> Contact us </h3> -->
     <div
       class="mt-8 text-white uppercase duration-1000 lg:mt-16 stroke font-montserrat ease-out-quint whitespace-nowrap"
@@ -9,7 +10,8 @@
       <h3 class="text-xl uppercase">Contact</h3>
     </div>
     <p>[ 🇫🇷 | 🇺🇸 | 🇪🇸 ]</p>
-    <p v-if="info">{{info}}</p>
+    <p v-show="error" class="text-red-400">{{error}}</p>
+    <p v-show="confirm" class="text-teal-500">{{confirm}}</p>
     <form
       class="w-full mt-4 grid gap-6 font-text"
       name="contact"
@@ -77,27 +79,30 @@
       </AltabTextInput>
       <div class="flex justify-between">
         <p
-          class="underline cursor-pointer font-montserrat"
+          class="underline cursor-pointer self-center"
           @click="openMailto"
         >
           contact@altab.tech
         </p>        
 
-        <button type="submit">
-          Send
-        </button>
+              <AltabButton type="submit" Title="Envoyer" Color="black" Size="medium"/>
+
       </div>
     </form>
-  </div>
+    </KinesisElement>
+  </KinesisContainer>
 </template>
 
 <script setup>
+import { KinesisContainer, KinesisElement} from "vue-kinesis"
+
 const email = ref("");
 const name = ref("");
 const object = ref("");
 const message = ref("");
 const rows = ref(10);
-const info = ref('')
+const error = ref('')
+const confirm = ref('')
 
 function createFormDataObj(data) {
   const formData = new FormData();
@@ -109,7 +114,7 @@ function createFormDataObj(data) {
 
 function handleSubmit() {
   if (email.value == "" || name.value == "" || object.value == "" || email.value == "") {
-    info.value = "Invalid input. Please verify any informations provided.";
+    error.value = "Invalid input. Please verify any informations provided.";
   } else {
     const data = {
       "form-name": "contact",
@@ -123,10 +128,15 @@ function handleSubmit() {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams(createFormDataObj(data)).toString(),
     })
-      .then((res) =>
-        info.value =  res.ok ? "Thanks for your message !" : "An error occured !"
+      .then((res) =>{
+          if(res.ok) {
+              confirm.value = "Your message has been sent. Thank you!";
+          } else {
+                error.value = "An error occured. Please try again later.";
+          }
+        }
       )
-      .catch(() => info.value = "An error occured !");
+      .catch(() => error.value = "An error occured !");
   }
 }
 

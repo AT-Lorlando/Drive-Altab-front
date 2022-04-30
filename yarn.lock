@@ -4524,6 +4524,11 @@ vue-bundle-renderer@^0.3.5:
   dependencies:
     bundle-runner "^0.0.1"
 
+vue-kinesis@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/vue-kinesis/-/vue-kinesis-2.0.5.tgz#48b68861d6dc50c256cd811fb5bad0203c439dea"
+  integrity sha512-uO2lG9A/L4I9KvyJuUzAkAWqd37In/kWxQ6rZ3/heJZ8+7rHAbBO5Knz6xG+cpO+9Q4cYurxXsPfWM6e7X9E3Q==
+
 vue-router@^4.0.12:
   version "4.0.12"
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.0.12.tgz#8dc792cddf5bb1abcc3908f9064136de7e13c460"

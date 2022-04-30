@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "axios": "^0.26.1",
-    "three": "^0.139.2"
+    "three": "^0.139.2",
+    "vue-kinesis": "^2.0.5"
   }
 }
