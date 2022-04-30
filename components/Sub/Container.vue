@@ -176,7 +176,14 @@ function folderMesh(f) {
     // add 8 plane forming a cube
     const cube = new THREE.Group();
     for (let i = 0; i < 6; i++) {
-      const mesh = new THREE.Mesh(geometryCube, material);
+      const new_texture = new THREE.TextureLoader().load(`http://localhost:3333${f.cover[i].data.breakpoints.small.url}`,fixTexture(1, 1));
+      new_texture.wrapS = THREE.ClampToEdgeWrapping;
+      new_texture.wrapT = THREE.RepeatWrapping;
+      const new_material = new THREE.MeshBasicMaterial({
+        map: new_texture,
+        side: THREE.DoubleSide,
+      });
+      const mesh = new THREE.Mesh(geometryCube, new_material);
       mesh.position.x = POS[i].x;
       mesh.position.y = POS[i].y;
       mesh.position.z = POS[i].z + 0.5;
