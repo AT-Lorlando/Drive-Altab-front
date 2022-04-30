@@ -155,6 +155,20 @@ function onMouseMove(event, size, camera) {
   camera.position.y += (-mouse.y * 2 - camera.position.y) * 0.05;
 }
 
+function fixTexture(planeWidth, planeHeight) {
+    return function(texture) {
+      const planeAspect = planeWidth / planeHeight;
+      const imageAspect = texture.image.width / texture.image.height;
+      const aspect = imageAspect / planeAspect;
+
+      texture.offset.x = aspect > 1 ? (1 - 1 / aspect) / 2 : 0;
+      texture.repeat.x = aspect > 1 ? 1 / aspect : 1;
+
+      texture.offset.y = aspect > 1 ? 0 : (1 - aspect) / 2;
+      texture.repeat.y = aspect > 1 ? 1 : aspect;
+    }
+  }
+
 function folderMesh(f) {
   console.log("Folder mesh")
   console.log(f)
@@ -176,7 +190,9 @@ function folderMesh(f) {
     return cube;
   } else {
     // Add a plane facing the camera
-    const new_texture = new THREE.TextureLoader().load(`http://localhost:3333${f.data.url}`);
+    const new_texture = new THREE.TextureLoader().load(`http://localhost:3333${f.data.breakpoints.small.url}`,fixTexture(1, 1));
+    new_texture.wrapS = THREE.ClampToEdgeWrapping;
+    new_texture.wrapT = THREE.RepeatWrapping;
     const new_material = new THREE.MeshBasicMaterial({
       map: new_texture,
       side: THREE.DoubleSide,
@@ -348,6 +364,11 @@ onMounted(() => {
     init();
     animate();
     draw_Folder();
+    document.addEventListener('close-photo-modal', (e) => {
+      folderDisplay.style.visibility = "visible"
+      fileIndex = null;
+      // focusedFile = null;
+  })
 });
 
 onUnmounted(() => {

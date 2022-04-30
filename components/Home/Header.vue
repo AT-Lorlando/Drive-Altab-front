@@ -31,6 +31,7 @@ import axios from "axios";
 let APIurl = "http://127.0.0.1:3333/api";
 const isLogged = ref(false)
 const user = ref({})
+const router = useRouter()
 
 
 function logout() {
@@ -48,6 +49,7 @@ function logout() {
 
 function goHome() {
     // Document emit event
+    router.push('/')
     document.dispatchEvent(new Event('go-home'))
 }
 
