@@ -20,7 +20,7 @@
       @submit.prevent="handleSubmit"
     >
       <p class="hidden">
-        <label>Don’t fill this out if you’re human: <input name="bot-field" /></label>
+        <label>Don't fill this out if you're human: <input name="bot-field" /></label>
       </p>
       <input type="hidden" name="form-name" value="contact" />
       <AltabTextInput v-model="email" type="email" name="email" placeholder="E-mail" center>
@@ -84,9 +84,7 @@
         >
           contact@altab.tech
         </p>        
-
-              <AltabButton type="submit" Title="Envoyer" Color="black" Size="medium"/>
-
+        <AltabButton type="submit" Title="Envoyer" Color="black" Size="medium"/>
       </div>
     </form>
     </KinesisElement>
