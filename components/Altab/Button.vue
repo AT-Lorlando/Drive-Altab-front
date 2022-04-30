@@ -8,16 +8,35 @@
   </NuxtLink>
 
   <button
-    v-if="Type == 'button'"
+    v-else-if="Type == 'button'"
     :class="`self-center transition-colors duration-300 ease-in transform rounded-xl hover:cursor-pointer px-2 h-12 ${add_class}`"
+    @click="click"
   >
     {{ Title }}
   </button>
+  <div v-else-if="Type=='bibutton'" class="self-center flex flex-row">
+    <button 
+      :class="`self-center transition-colors duration-300 ease-in transform rounded-l-xl hover:cursor-pointer px-2 h-12 ${add_class}`"
+      @click="click"
+    >
+    {{ Title }}
+    </button>
+    <button
+      :class="`self-center transition-colors duration-300 ease-in transform rounded-r-xl hover:cursor-pointer px-2 h-12 ${add_class}`"
+      @click="biclick"
+    >
+    {{ biTitle }}
+    </button>
+  </div>
 </template>
 <script>
 export default {
   props: {
     Title: {
+      type: String,
+      default: "Button",
+    },
+    biTitle: {
       type: String,
       default: "Button",
     },
@@ -37,6 +56,14 @@ export default {
       type: String,
       default: "",
     },
+    click : {
+      type: Function,
+      default: () => {},
+    },
+    biclick : {
+      type: Function,
+      default: () => {},
+    },
   },
   data() {
     let add_class = "";
@@ -49,7 +76,7 @@ export default {
             "bg-transparent hover:bg-black hover:text-white border border-black hover:border-white hover:scale-110 "
       }
     } else if (this.Size == "medium") {
-      add_class += "w-40 "
+      add_class += this.Type == 'bibutton' ? "w-20 " : "w-40 "
       if (this.Color == "black") {
           add_class+=
             "bg-black hover:bg-white text-white hover:text-black border hover:border-black hover:scale-105 "
@@ -62,7 +89,7 @@ export default {
       }
     }
     else if (this.Size == "large") {
-      add_class += "w-80 "
+      add_class += this.Type == 'bibutton' ? "w-40 " : "w-80 "
       if (this.Color == "black") {
           add_class+=
             "bg-black hover:bg-white text-white hover:text-black border hover:border-black hover:scale-105 "
