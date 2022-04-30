@@ -388,8 +388,10 @@ onUnmounted(() => {
     id="folderDisplay"
     class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12 bg-black"
   >
-    <li v-for="(f,index) in props.folder" @click="onClick(f, index)" class="text-white text-xl z-10 hover:cursor-pointer">
-      {{f.name || f.title}}
+    <li v-for="(f,index) in props.folder" @click="onClick(f, index)" class="text-white text-xl z-10 hover:cursor-pointer flex flex-col items-center">
+      <h1 class="text-xl">
+        {{f.name || f.title}}
+      </h1>
       <div :id="`scene${index}`" class="w-80 h-80">
       
       </div>
