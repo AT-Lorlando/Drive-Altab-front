@@ -176,7 +176,8 @@ function folderMesh(f) {
     // add 8 plane forming a cube
     const cube = new THREE.Group();
     for (let i = 0; i < 6; i++) {
-      const new_texture = new THREE.TextureLoader().load(`http://localhost:3333${f.cover[i].data.breakpoints.small.url}`,fixTexture(1, 1));
+      let j = i % f.cover.length
+      const new_texture = new THREE.TextureLoader().load(`${baseURL}${f.cover[j].data.breakpoints.small.url}`,fixTexture(1, 1));
       new_texture.wrapS = THREE.ClampToEdgeWrapping;
       new_texture.wrapT = THREE.RepeatWrapping;
       const new_material = new THREE.MeshBasicMaterial({
@@ -197,7 +198,7 @@ function folderMesh(f) {
     return cube;
   } else {
     // Add a plane facing the camera
-    const new_texture = new THREE.TextureLoader().load(`http://localhost:3333${f.data.breakpoints.small.url}`,fixTexture(1, 1));
+    const new_texture = new THREE.TextureLoader().load(`${baseURL}${f.data.breakpoints.small.url}`,fixTexture(1, 1));
     new_texture.wrapS = THREE.ClampToEdgeWrapping;
     new_texture.wrapT = THREE.RepeatWrapping;
     const new_material = new THREE.MeshBasicMaterial({
@@ -335,6 +336,7 @@ function draw_Folder() {
 const focusedFile = inject('focusedFile');
 let fileIndex = null;
 let folderDisplay = null; // The element used to display the folder
+const baseURL = "https://driveapi.altab.tech";
 
 const props = defineProps({
   folder: {
