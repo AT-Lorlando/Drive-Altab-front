@@ -1,6 +1,5 @@
 <template>
-  <div class="bg-black flex flex-row w-screen h-screen">
-    <HomeBar />
+  <div class="h-full w-full">
     <HomeContainer />
   </div>  
 </template>
