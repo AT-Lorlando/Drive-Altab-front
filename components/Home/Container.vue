@@ -17,7 +17,7 @@
         @sceneClick="onSceneClick"
       />
       <div
-        v-if="lastPage"
+        v-if="lastPage.value > 1"
         v-show="!showPhotoModal && !showLockedModal"
         class="absolute flex flex-row w-full justify-between inset-0 px-4 z-20 h-20 top-1/2"
       >
@@ -69,7 +69,7 @@ const props = defineProps({
     default: 1,
   },
 });
-const baseURL = "http://127.0.0.1:3333/api";
+const baseURL = "https://driveapi.altab.tech/api";
 const showPhotoModal = ref(false);
 const showLockedModal = ref(false);
 const photoDisplayed = ref(null);
