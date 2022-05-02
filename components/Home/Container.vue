@@ -69,7 +69,7 @@ const props = defineProps({
     default: 1,
   },
 });
-const baseURL = "https://driveapi.altab.tech/api";
+const baseURL = "https://api.drive.altab.tech/api";
 const showPhotoModal = ref(false);
 const showLockedModal = ref(false);
 const photoDisplayed = ref(null);
