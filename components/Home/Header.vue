@@ -39,17 +39,6 @@ const isLogged = ref(false)
 const user = ref({})
 const router = useRouter()
 
-const { pending, data: userInfo, refresh, error } = useLazyAsyncData("user", () =>
-  axios.get(`${baseURL}/session`,{ withCredentials: true })
-  .then(res => {
-      console.log("res.data")
-    console.log(res.data)
-  }).catch(err => {
-    console.log(err)
-  })
-);
-
-
 function logout() {
     axios.get(baseURL+'/logout',{ withCredentials: true })
     .then(response => {
@@ -70,9 +59,6 @@ function goHome() {
 }
 
 onMounted(() => {
-
-
-
     document.addEventListener("session-change", () => {
         console.log("session-change")
         isLogged.value = localStorage.getItem("isLogged")
@@ -81,7 +67,19 @@ onMounted(() => {
         console.log(user.value)
         console.log(isLogged.value)
     })
-    
+    axios.get(`${baseURL}/session`,{ withCredentials: true })
+        .then(res => {
+            if(res.status === 200) {
+                console.log('Login...', res)
+                let user = res.data.user
+                console.log(user)
+                localStorage.setItem('isLogged', true)
+                this.$router.push('/')
+                document.dispatchEvent(new Event('session-change'))
+            }
+        }).catch(err => {
+            console.log(err)
+        })    
 })
 </script>
 
