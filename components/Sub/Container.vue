@@ -388,7 +388,7 @@ onUnmounted(() => {
 <template>
   <ul
     id="folderDisplay"
-    class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12 bg-black"
+    class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12"
   >
     <li v-for="(f,index) in props.folder" @click="onClick(f, index)" class="text-white text-xl z-10 hover:cursor-pointer flex flex-col items-center">
       <h1 class="text-xl">

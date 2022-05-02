@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col pt-40 w-full h-screen text-white bg-black z-50">
+  <div class="flex flex-col pt-40 w-full h-screen text-white bg-primary-dark z-50">
     <form @submit.prevent="login" class="flex flex-col w-full max-w-xl mx-auto">
       <h1 class="text-4xl w-full text-center mb-3">Se connecter</h1>
 
@@ -23,7 +23,8 @@
 
 <script>
 import axios from 'axios'
-let APIurl = 'http://127.0.0.1:3333/api'
+const baseURL = "https://driveapi.altab.tech/api";
+
 // const { $store } = useNuxtApp()
 
 
@@ -39,7 +40,7 @@ export default {
     login() {
         console.log('Try to log')
       // document event to say that the user is logged
-      axios.post(APIurl+'/login', {
+      axios.post(baseURL+'/login', {
         email: this.email,
         password: this.password,
         remember: this.remember,
