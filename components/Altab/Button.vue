@@ -70,38 +70,38 @@ export default {
     if (this.Size == "small") {
       if (this.Color == "black") {
           add_class+=
-            "bg-primary-dark hover:bg-opacity-0 text-white hover:text-black border hover:border-black hover:scale-110 "
+            "bg-primary-dark hover:bg-opacity-0 text-white hover:text-black border hover:border-primary-dark hover:scale-110 "
       } else if (this.Color == "transparent") {
           add_class+=
-            "bg-transparent hover:bg-primary-dark hover:text-white border border-black hover:border-white hover:scale-110 "
+            "bg-transparent hover:bg-primary-dark hover:text-white border border-primary-dark hover:border-white hover:scale-110 "
       } else if (this.Color == "white") {
           add_class+=
-            "text-white border-white bg-transparent hover:bg-white hover:text-black border border-black hover:border-white hover:scale-110 "
+            "text-white border-white bg-transparent hover:bg-white hover:text-black border border-primary-dark hover:border-white hover:scale-110 "
       }
     } else if (this.Size == "medium") {
       add_class += this.Type == 'bibutton' ? "w-20 " : "w-40 "
       if (this.Color == "black") {
           add_class+=
-            "bg-primary-dark hover:bg-white text-white hover:text-black border hover:border-black hover:scale-105 "
+            "bg-primary-dark hover:bg-white text-white hover:text-black border hover:border-primary-dark hover:scale-105 "
       } else if (this.Color == "transparent") {
           add_class+=
-            "bg-transparent hover:bg-primary-dark hover:text-white border border-black hover:border-white hover:scale-105 "
+            "bg-transparent hover:bg-primary-dark hover:text-white border border-primary-dark hover:border-white hover:scale-105 "
       } else if (this.Color == "white") {
           add_class+=
-            "text-white bg-transparent hover:bg-white hover:text-black border border-black hover:border-white hover:scale-105 "
+            "text-white bg-transparent hover:bg-white hover:text-black border border-primary-dark hover:border-white hover:scale-105 "
       }
     }
     else if (this.Size == "large") {
       add_class += this.Type == 'bibutton' ? "w-40 " : "w-80 "
       if (this.Color == "black") {
           add_class+=
-            "bg-primary-dark hover:bg-white text-white hover:text-black border hover:border-black hover:scale-105 "
+            "bg-primary-dark hover:bg-white text-white hover:text-black border hover:border-primary-dark hover:scale-105 "
       } else if (this.Color == "transparent") {
           add_class+=
-            "bg-transparent hover:bg-primary-dark hover:text-white border border-black hover:border-white hover:scale-105 "
+            "bg-transparent hover:bg-primary-dark hover:text-white border border-primary-dark hover:border-white hover:scale-105 "
       } else if (this.Color == "white") {
           add_class+=
-            "text-white bg-transparent hover:bg-white hover:text-black border border-black hover:border-white hover:scale-105 "
+            "text-white bg-transparent hover:bg-white hover:text-black border border-primary-dark hover:border-white hover:scale-105 "
       }
     }
     return {
