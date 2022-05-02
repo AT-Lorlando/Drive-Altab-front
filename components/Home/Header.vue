@@ -5,6 +5,7 @@
             <MolleculesInputCommand class="pl-4"/>
             <AltabButton Type="link" Route="/about" Title="A propos" Color="white" Size="medium"/>
             <AltabButton Type="link" Route="/contact-me" Title="Contact" Color="white" Size="medium"/>
+            <AltabButton Type="link" Route="/exemples" Title="Retouches" Color="white" Size="medium"/>
         </div>
         <!-- <IconsBell class="icons"/>
         <IconsAdd class="icons"/>

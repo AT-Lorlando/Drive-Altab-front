@@ -33,6 +33,7 @@
         Color="black"
         Size="large"
       />
+      <AltabButton Type="link" Route="/exemples" Title="Voir des exemples de retouches" Color="black" Size="large" />
       <AltabButton
         Type="link"
         :Route="`/contact-help${photo.id}`"

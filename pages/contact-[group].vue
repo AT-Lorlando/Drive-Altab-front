@@ -61,7 +61,8 @@
           v-model="object"
           type="text"
           name="object"
-          placeholder="Object"
+          placeholder="Objet"
+          :value="ObjectPlaceholder"
           center
         >
           <AltabAppLabelIcon />
@@ -104,7 +105,8 @@
 
 <script setup>
 import { KinesisContainer, KinesisElement } from "vue-kinesis";
-
+const route = useRoute()
+const ObjectPlaceholder = ref('Object')
 const email = ref("");
 const name = ref("");
 const object = ref("");
@@ -112,6 +114,7 @@ const message = ref("");
 const rows = ref(10);
 const error = ref("");
 const confirm = ref("");
+const id = ref(null);
 
 function createFormDataObj(data) {
   const formData = new FormData();
@@ -131,6 +134,7 @@ function handleSubmit() {
       name: name.value,
       object: object.value,
       message: message.value,
+      photo: id.value,
     };
     fetch("/", {
       method: "POST",
@@ -154,6 +158,19 @@ function openMailto() {
 
 onMounted(() => {
   console.log(navigator);
+  let contactType = route.params.group;
+  if(contactType == "me") {
+  }
+  // Else if the contact type is a regex (ex: edit10), we get the id from the regex
+  else if (contactType.match(/^edit\d+$/)) {
+    id.value = contactType.replace("edit", "");
+    contactType = "edit";
+    ObjectPlaceholder.value = "[photo " + id.value+ "]" + " Demande de modification"; 
+  } else if (contactType.match(/^help\d+$/)) {
+    id.value = contactType.replace("help", "");
+    contactType = "help";
+    ObjectPlaceholder.value = "[photo " + id.value+ "]" + " Demande d'aide"; 
+  }
 });
 </script>
 

@@ -74,6 +74,9 @@ export default {
       } else if (this.Color == "transparent") {
           add_class+=
             "bg-transparent hover:bg-primary-dark hover:text-white border border-black hover:border-white hover:scale-110 "
+      } else if (this.Color == "white") {
+          add_class+=
+            "text-white border-white bg-transparent hover:bg-white hover:text-black border border-black hover:border-white hover:scale-110 "
       }
     } else if (this.Size == "medium") {
       add_class += this.Type == 'bibutton' ? "w-20 " : "w-40 "
