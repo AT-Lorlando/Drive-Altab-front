@@ -50,9 +50,8 @@ export default {
         if(response.status === 200) {
           console.log('Login...', response)
           let user = response.data.user
+          console.log(user)
           localStorage.setItem('isLogged', true)
-          localStorage.setItem('user.name', user.first_name)
-          localStorage.setItem('user.id', user.id)
           this.$router.push('/')
           document.dispatchEvent(new Event('session-change'))
         }        
