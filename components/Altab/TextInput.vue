@@ -47,7 +47,7 @@ export default {
   },
   computed: {
     getInputClass() {
-      return 'flex-1 rounded-lg placeholder-light-grey text-white bg-transparent focus:outline-none rounded-none sm:focus:bg-black sm:focus:bg-opacity-30'
+      return 'flex-1 rounded-lg placeholder-light-grey text-white bg-transparent focus:outline-none rounded-none sm:focus:bg-primary-dark sm:focus:bg-opacity-30'
     },
   },
   methods: {

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center w-full h-full bg-black text-white">
+  <div class="flex flex-col items-center w-full h-full bg-primary-dark text-white">
     <div v-if="pending">Loading ...</div>
     <div v-else-if="error">Une erreur est survenue. Désolé!</div>
     <div v-else class="w-full">
@@ -186,6 +186,7 @@ function closeLockedModal() {
 
 // Function to handle the photo modal:
 function closePhotoModal() {
+  console.log("close")
   document.dispatchEvent(new Event("close-photo-modal"));
   showPhotoModal.value = false;
   photoDisplayed.value = null;

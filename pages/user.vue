@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col pt-40 w-full h-screen text-white bg-black z-50">
+  <div class="flex flex-col pt-40 w-full h-screen text-white bg-primary-dark z-50">
     {{first_name}} - {{last_name}} - {{email}}
   </div>  
 </template>

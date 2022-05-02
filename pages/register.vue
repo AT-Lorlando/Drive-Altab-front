@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col pt-40 w-full h-screen text-white bg-black z-50">
+  <div class="flex flex-col pt-40 w-full h-screen text-white bg-primary-dark z-50">
     <form @submit.prevent="register" class="flex flex-col w-full max-w-xl mx-auto">
       <h1 class="text-4xl w-full text-center">S'inscrire</h1>
       <div class="flex flex-row space-x-4 my-3">
