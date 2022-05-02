@@ -3,6 +3,9 @@
   <div v-if="pending" class="text-white">
       Loading ...
     </div>
+    <div v-else-if="error" class="text-white">
+      Loading ...
+    </div>
     <div v-else>
     <HomeContainer :folderIDSearched="folderIDSearched
     "/>
@@ -31,15 +34,18 @@ console.log(res)
 
 onMounted(() => {
   console.log("Slug mounted")
-  console.log(res.value.length)
-  console.log(res.value[0])
-  console.log(res.value[0].folder.idc)
-  folderIDSearched.value = res.value[0].folder.id
-  if (pathExist) {
-
-  } else {
-    router.push('/404')
-  }
+  if(res.value) {
+    console.log(res.value.length)
+    console.log(res.value[0])
+    console.log(res.value[0].folder.idc)
+    folderIDSearched.value = res.value[0].folder.id
+    if (pathExist) {
+  
+      
+      }
+    } else {
+        router.push('/404')
+      }
 })
 
 </script>

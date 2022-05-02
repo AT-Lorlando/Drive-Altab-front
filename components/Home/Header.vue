@@ -3,8 +3,8 @@
         <div class="flex flex-row space-x-10 pl-4">
             <IconsMenu @click="goHome" class="icons" />
             <MolleculesInputCommand class="pl-4"/>
-            <AltabButton Type="link" Route="/login" Title="A propos" Color="white" Size="medium"/>
-            <AltabButton Type="link" Route="/login" Title="Contact" Color="white" Size="medium"/>
+            <AltabButton Type="link" Route="/about" Title="A propos" Color="white" Size="medium"/>
+            <AltabButton Type="link" Route="/contact-me" Title="Contact" Color="white" Size="medium"/>
         </div>
         <!-- <IconsBell class="icons"/>
         <IconsAdd class="icons"/>
