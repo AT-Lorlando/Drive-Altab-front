@@ -19,7 +19,7 @@ const route = useRoute()
 const router = useRouter()
 const folderIDSearched = ref(1)
 // Search if this path exist on the api, if not, redirect to 404, if yes, render the page with the data
-const baseURL = 'https://driveapi.altab.tech/api'
+const baseURL = "https://api.drive.altab.tech/api"
 
 const path = route.params.slug
 const _folderName = path[path.length - 1].toLocaleLowerCase()

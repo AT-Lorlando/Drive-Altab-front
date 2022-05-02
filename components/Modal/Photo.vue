@@ -72,7 +72,7 @@
 
 <script setup>
 const emit = defineEmits(["close", "next", "previous", "nextPage", "previousPage"]);
-const baseURL = "https://driveapi.altab.tech";
+const baseURL = "https://api.drive.altab.tech/api";
 
 let informations = ref([]);
 const showFullscreen = ref(false);

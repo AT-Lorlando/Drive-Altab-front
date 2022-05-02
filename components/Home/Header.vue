@@ -34,7 +34,7 @@
 
 <script setup>
 import axios from "axios";
-const baseURL = "https://driveapi.altab.tech/api";
+const baseURL = "https://api.drive.altab.tech/api";
 const isLogged = ref(false)
 const user = ref({})
 const router = useRouter()

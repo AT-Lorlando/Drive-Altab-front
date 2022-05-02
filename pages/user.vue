@@ -6,7 +6,7 @@
 
 <script setup>
 import axios from 'axios'
-let APIurl = 'https://driveapi.altab.tech/api'
+let APIurl = "https://api.drive.altab.tech/api"
 
 // Fetch user informations
 const id = 0
