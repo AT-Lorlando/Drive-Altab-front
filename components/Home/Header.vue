@@ -71,10 +71,10 @@ onMounted(() => {
         .then(res => {
             if(res.status === 200) {
                 console.log('Login...', res)
-                let user = res.data.user
                 console.log(user)
+                isLogged.value = true
+                user.value = res.data.user
                 localStorage.setItem('isLogged', true)
-                this.$router.push('/')
                 document.dispatchEvent(new Event('session-change'))
             }
         }).catch(err => {
