@@ -36,48 +36,37 @@
       <AltabButton :click="close" Title="Fermer" Color="black" Size="large" />
       <AltabButton :click="previousPage" :biclick="nextPage" Title="Page précédente" Color="black" Size="large" Type="bibutton" biTitle="Page suivante" />
     </div>
+    <div v-if="showFullscreen" class="fixed z-30 flex flex-col w-full h-full items-center justify-center bg-white bg-opacity-20">
+      <div class="absolute self-center">
+        <img :src="`${baseURL}${photo.data.url}`" class="object-scale-down rounded-xl max-w-screen-xl max-h-screen shadow-lg border-white border-2 bg-blend-luminosity"/>
+        <IconsExit class="absolute top-0 right-0 m-8 hover:cursor-pointer" @click="closeFullscreen" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-const emit = defineEmits(["close","fullscreen", "next", "previous", "nextPage", "previousPage"]);
-const props = defineProps({
-  photo: {
-    type: Object,
-    default: {},
-  },
+const emit = defineEmits(["close", "next", "previous", "nextPage", "previousPage"]);
+const baseURL = "https://driveapi.altab.tech"
+
+let informations = ref([])
+const showFullscreen = ref(false)
+const fullsize = ref(null)
+const photo = inject("focusedFile");
+
+watch(photo, (newPhoto) => {
+  console.log(newPhoto)
+  if(newPhoto) {
+    setPhoto(newPhoto)
+  }
 });
 
-let currentPhoto = props.photo;
-let informations = [
-  {
-    name: "Taille",
-    value: currentPhoto.size,
-  },
-  {
-    name: "Type",
-    value: currentPhoto.type,
-  },
-  {
-    name: "Dimensions",
-    value: currentPhoto.width + "x" + currentPhoto.height,
-  },
-  {
-    name: "Nom",
-    value: currentPhoto.title,
-  },
-  {
-    name: "Date",
-    value: currentPhoto.date,
-  },
-];
-let fullSize = null;
-
 function fullscreen() {
-  console.log("fullscreen");
-  emit('fullscreen')
-  // Fetch the photo in its original size if it's not already done, then display it in fullscreen
-  // this.fetchPhoto();
+  showFullscreen.value = true
+}
+
+function closeFullscreen() {
+  showFullscreen.value = false
 }
 
 function close() {
@@ -117,30 +106,36 @@ function fetchPhoto() {
 }
 
 function setPhoto(photo) {
-  this.informations = [
-    {
-      name: "Taille",
-      value: photo.size,
-    },
-    {
-      name: "Type",
-      value: photo.type,
-    },
-    {
-      name: "Dimensions",
-      value: photo.width + "x" + photo.height,
-    },
+  console.log('set photo', photo)
+  informations.value = [
     {
       name: "Nom",
       value: photo.title,
     },
     {
       name: "Date",
-      value: photo.date,
+      value: photo.updated_at.split("T")[0].split("-").reverse().join("/"),
     },
+    {
+      name: "Taille",
+      value: (photo.data.size * 0.00095367432).toFixed(2) + " Mb"
+    },
+    {
+      name: "Dimensions",
+      value: photo.data.width + "x" + photo.data.height,
+    },
+      {
+        name: "Type",
+        value: photo.data.format,
+      },
   ];
-  this.currentPhoto = photo;
+  fullsize.value = `${baseURL}${photo.data.url}`
+  console.log(`${baseURL}${photo.data.url}`)
 }
+
+onMounted(() => {
+  setPhoto(photo.value)
+})
 </script>
 
 <style scoped>
