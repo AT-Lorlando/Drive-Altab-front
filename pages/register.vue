@@ -37,7 +37,7 @@
 
 <script>
 import axios from 'axios'
-let APIurl = 'http://127.0.0.1:3333/api'
+const baseURL = "https://driveapi.altab.tech/api";
 
 export default {
   data() {
@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     register() {
-      axios.post(APIurl+'/register', {
+      axios.post(baseURL+'/register', {
         email: this.email,
         password: this.password,
         remember: this.remember,

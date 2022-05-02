@@ -34,14 +34,28 @@
 
 <script setup>
 import axios from "axios";
-let APIurl = "http://127.0.0.1:3333/api";
+const baseURL = "https://driveapi.altab.tech/api";
 const isLogged = ref(false)
 const user = ref({})
 const router = useRouter()
 
+const { pending, data: userInfo, refresh, error } = useLazyAsyncData("user", () =>
+  $fetch(`${baseURL}/session`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    }
+  }).then(res => {
+      console.log("res.data")
+    console.log(res.data)
+  }).catch(err => {
+    console.log(err)
+  })
+);
+
 
 function logout() {
-    axios.get(APIurl+'/logout',{ withCredentials: true })
+    axios.get(baseURL+'/logout',{ withCredentials: true })
     .then(response => {
         console.log(response)
         isLogged.value = false
@@ -60,6 +74,9 @@ function goHome() {
 }
 
 onMounted(() => {
+
+
+
     document.addEventListener("session-change", () => {
         console.log("session-change")
         isLogged.value = localStorage.getItem("isLogged")

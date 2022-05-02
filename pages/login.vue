@@ -23,7 +23,8 @@
 
 <script>
 import axios from 'axios'
-let APIurl = 'http://127.0.0.1:3333/api'
+const baseURL = "https://driveapi.altab.tech/api";
+
 // const { $store } = useNuxtApp()
 
 
@@ -39,7 +40,7 @@ export default {
     login() {
         console.log('Try to log')
       // document event to say that the user is logged
-      axios.post(APIurl+'/login', {
+      axios.post(baseURL+'/login', {
         email: this.email,
         password: this.password,
         remember: this.remember,
