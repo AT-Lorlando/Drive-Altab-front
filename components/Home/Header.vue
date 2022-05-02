@@ -40,12 +40,8 @@ const user = ref({})
 const router = useRouter()
 
 const { pending, data: userInfo, refresh, error } = useLazyAsyncData("user", () =>
-  $fetch(`${baseURL}/session`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    }
-  }).then(res => {
+  axios.get(`${baseURL}/session`,{ withCredentials: true })
+  .then(res => {
       console.log("res.data")
     console.log(res.data)
   }).catch(err => {
