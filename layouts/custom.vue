@@ -1,8 +1,8 @@
 <template>
-  <div >
+  <div class="w-full h-screen">
     <canvas
           id="threecanvas"
-          class="absolute w-screen h-screen inset-0 z-0"
+          class="absolute w-full h-full inset-0 z-0"
         >
     </canvas>
     <HomeHeader />

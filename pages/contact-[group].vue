@@ -106,7 +106,7 @@
 <script setup>
 import { KinesisContainer, KinesisElement } from "vue-kinesis";
 const route = useRoute()
-const ObjectPlaceholder = ref('Object')
+const ObjectPlaceholder = ref('')
 const email = ref("");
 const name = ref("");
 const object = ref("");
