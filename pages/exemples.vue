@@ -1,35 +1,92 @@
 <template>
-    <div class="w-full h-full bg-primary-dark flex flex-col justify-center text-white text-xl z-20">
-        <div class="w-2/5 self-center justify-center items-center flex flex-col text-center">
+    <div class="w-full h-full bg-primary-dark flex flex-col text-white text-xl z-20">
+        <div class="w-2/5 self-center mt-20 items-center flex flex-col text-center">
             <h2>
-            Qu'est-ce qu'Altab ?
+            Exemple de retouche
             </h2>
-            <p>
-            Altab est une entreprise de communication digitale. Ce domaine regroupe aussi bien la prise de photo que le developpement de site ou d'applications. drive.altab.tech est un site de gestion de photos, regroupant mes photos pour les partagers et pour vous permettre de les consulter/télécharger avec la meilleure qualité possible. Ce site permet aussi de me contacter si vous avez une demande particulère telle que la retouche d'une photo.
-            </p>
-            <h2>
-            Que puis-je faire avec ces photos ?
-            </h2>
-            <p>
-            Les photos auxquelles vous avez accès sont libre de droit. Certains dossiers peuvent être protégés par un mot de passe, les photos contenues dans ce dossier sont libre de droit pour ceux ayant accès au dossier.
-            <br>
-            Si une photo vous plaît, vous pouvez donc la télécharger et l'utiliser. Vous pouvez aussi me demander de la retoucher/de l'editer pour l'enjoliver.
-            </p>
-            <AltabButton class="mt-2" Type="link" Route="/exemples" Title="Voir des exemples" Color="white" Size="small" />
-            <h2>
-            Je ne veux pas apparaître ici.
-            </h2>
-            <p>
-            Si vous ne voulez pas apparaître ici, vous pouvez me contacter afin de supprimer au plus vite les photos concernées. Votre droit à l'image s'applique, tout en sachant que photographier une foule est possible mais les individus ne doivent pas être pris en gros plan.
-            </p>
-        
+            <div class='container'>
+                <div class='img background-img'></div>
+                <div ref="toslide" class='img foreground-img'></div>
+                <input ref="slider" type="range" min="1" max="1000" value="500" class="slider" name='slider' id="slider">
+            </div>
         </div>
     </div>
 </template>
 <script setup>
+
+const slider = ref(null)
+const toslide = ref(null)
+
+onMounted(()=> {
+    console.log(slider.value)
+    slider.value?.addEventListener('input', () => {
+        const width = slider.value.value;
+        toslide.value.style.width = width/10 + '%';
+    })
+
+
+})
+
 </script>
 <style scoped>
 h2 {
     @apply text-3xl mt-4 mb-2
 }
+
+.container {
+  position: relative;
+  width: 900px;
+  height: 600px;
+  border: 2px solid white;
+}
+.img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: 900px 100%;
+}
+.background-img {
+    background-image: url('@/assets/imgs/IMG3.png');
+}
+.foreground-img {
+    background-image: url('@/assets/imgs/IMG3bis.png');
+    width: 50%;
+}
+.slider {
+    background: none;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    -webkit-appearance: none;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    margin: 0;
+    transition: all .2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* slider ball style */
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 5px;
+    height: 600px;
+    background: #fff;
+    cursor: pointer;
+    border: 2px solid #fff;
+}
+
+
 </style>
