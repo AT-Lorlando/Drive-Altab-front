@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center w-full h-full bg-primary-dark text-white">
-    <div v-if="pending">Loading ...</div>
-    <div v-else-if="error">Une erreur est survenue. Désolé!</div>
+    <div class="w-3/5 text-center self-center text-8xl mt-20" v-if="pending">Loading ...</div>
+    <div class="w-3/5 text-center self-center text-8xl mt-20" v-else-if="error">Une erreur est survenue. <br>Désolé!</div>
     <div v-else class="w-full">
       <div class="flex flex-row w-full justify-between items-center px-12">
       <div class="flex flex-row items-center">
@@ -100,8 +100,6 @@ const { pending, data: folderData, refresh, error } = useLazyAsyncData("folderDa
 
 // Watch on folderData, to add the type on each element and update the path
 watch(folderData, (newfolderData) => {
-  console.log("newfolderData");
-  console.log(newfolderData);
   if (newfolderData.childs.length > 0) {
     folderData.value.childs.forEach((element) => {
       element.type = "Folder";
@@ -146,7 +144,6 @@ function previousPage() {
  *
  */
 function onSceneClick(index) {
-  console.log("Scene click");
   if (folderData.value.childs[index]) {
     // It's a file
     const folder = folderData.value.childs[index];
@@ -158,7 +155,6 @@ function onSceneClick(index) {
     }
   } else if (folderData.value.images.data[index]) {
     // It's an image
-    console.log("On an image");
     const image = folderData.value.images.data[index];
     showPhotoModal.value = true;
     photoDisplayed.value = image;
@@ -166,8 +162,6 @@ function onSceneClick(index) {
 }
 
 function onPathClick(f) {
-  console.log("Path click");
-  console.log(f);
   folderID.value = f.id;
   closePhotoModal();
   closeLockedModal();
@@ -186,7 +180,6 @@ function closeLockedModal() {
 
 // Function to handle the photo modal:
 function closePhotoModal() {
-  console.log("close")
   document.dispatchEvent(new Event("close-photo-modal"));
   showPhotoModal.value = false;
   photoDisplayed.value = null;
@@ -194,7 +187,6 @@ function closePhotoModal() {
 
 // Function to handle the click on the next button in the modal
 function nextPhoto() {
-  console.log("Next photo");
   const index = folderData.value.images.data.indexOf(photoDisplayed.value);
   photoDisplayed.value =
     folderData.value.images.data[(index + 1) % folderData.value.images.data.length];
@@ -202,7 +194,6 @@ function nextPhoto() {
 
 // Function to handle the click on the next button in the modal
 function previousPhoto() {
-  console.log("Previous photo");
   const index = folderData.value.images.data.indexOf(photoDisplayed.value);
   photoDisplayed.value =
     folderData.value.images.data[
@@ -211,12 +202,9 @@ function previousPhoto() {
 }
 
 function fullscreen() {
-  console.log("Fullscreen");
 }
 
 onMounted(() => {
-  console.log("Main container mounted");
-  console.log(props.folderIDSearched);
   document.addEventListener("go-home", (e) => {
     closePhotoModal();
     closeLockedModal();

@@ -61,7 +61,6 @@ export default {
         confirmPassword: this.confirmPassword,
       })
       .then(response => {
-        console.log(response)
       })
     }
   }

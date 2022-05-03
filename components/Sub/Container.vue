@@ -170,8 +170,6 @@ function fixTexture(planeWidth, planeHeight) {
   }
 
 function folderMesh(f) {
-  console.log("Folder mesh")
-  console.log(f)
   if (f.type === "Folder") {
     // add 8 plane forming a cube
     const cube = new THREE.Group();
@@ -284,10 +282,7 @@ function render() {
 }
 
 function draw_Folder() {
-  console.log("%cDraw folder", "color: red; font-size: 20px", props.folder);
-  console.log("Draw folder", props.folder);
   props.folder.forEach((f, index) => {
-    console.log(f.type);
     let scene;
     if (scenes[index]) {
       scene = scenes[index];
@@ -295,8 +290,6 @@ function draw_Folder() {
 
       
       const sceneElement = document.getElementById(`scene${index}`);
-      // console.log(sceneElement)
-
       scene.userData.element = sceneElement;
       const sceneSize = scene.userData.size;
         sceneElement?.parentElement.addEventListener("mousemove", () => {
@@ -312,7 +305,6 @@ function draw_Folder() {
       scene.copy(defaultScene);
       const sceneElement = document.getElementById(`scene${index}`);
       const sceneSize = sceneElement.getBoundingClientRect();
-      console.log(sceneElement);
       scene.userData.element = sceneElement;
       scene.userData.size = sceneSize;
       sceneElement.parentElement.addEventListener("mousemove", () => {
@@ -327,7 +319,6 @@ function draw_Folder() {
     if (f.type != "fill") {
       scene.add(folderMesh(f));
     }
-    // console.log(scene)
   });
 }
 
@@ -347,13 +338,7 @@ const props = defineProps({
 
 const emit = defineEmits(['sceneClick'])
 
-
-function hover(f) {
-  // console.log(f)
-}
-
 function onClick(f, i) {
-  console.log("I HAVE CLICKED");
   emit('sceneClick', i)
   // Set the focused file to the file that was clicked, if it the same, than close
   // focusedFile = focusedFile? null : f
@@ -366,8 +351,6 @@ function onClick(f, i) {
 }
 
 onMounted(() => {
-  console.log("Three container mounted")
-  console.log(props.folder)
     // canvas = document.getElementById(`threecanvas`);
     folderDisplay = document.getElementById("folderDisplay");
     init();

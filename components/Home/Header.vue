@@ -42,11 +42,8 @@ const router = useRouter()
 function logout() {
     axios.get(baseURL+'/logout',{ withCredentials: true })
     .then(response => {
-        console.log(response)
         isLogged.value = false
-        console.log(isLogged)
     }).catch(error => {
-        console.log(error)
     })
     // document.dispatchEvent(new Event('session-change'))
     // localStorage.setItem('isLogged', false)
@@ -60,25 +57,18 @@ function goHome() {
 
 onMounted(() => {
     document.addEventListener("session-change", () => {
-        console.log("session-change")
         isLogged.value = localStorage.getItem("isLogged")
         user.value = localStorage.getItem("user.name")
-        console.log('User')
-        console.log(user.value)
-        console.log(isLogged.value)
     })
     axios.get(`${baseURL}/session`,{ withCredentials: true })
         .then(res => {
             if(res.status === 200) {
-                console.log('Login...', res)
-                console.log(user)
                 isLogged.value = true
                 user.value = res.data.user
                 localStorage.setItem('isLogged', true)
                 document.dispatchEvent(new Event('session-change'))
             }
         }).catch(err => {
-            console.log(err)
         })    
 })
 </script>

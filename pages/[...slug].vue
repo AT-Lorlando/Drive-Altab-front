@@ -25,19 +25,9 @@ const path = route.params.slug
 const _folderName = path[path.length - 1].toLocaleLowerCase()
 const { pending, data: res, refresh, error } = useAsyncData('path', () => $fetch(`${baseURL}/folders/search/${_folderName}`))
 const pathExist = path.join('/')
-console.log(pathExist)
-console.log("folderSearched")
-console.log(res)
-// const folderSearched = res?.value
-// console.log(folderSearched)
-
 
 onMounted(() => {
-  console.log("Slug mounted")
   if(res.value) {
-    console.log(res.value.length)
-    console.log(res.value[0])
-    console.log(res.value[0].folder.idc)
     folderIDSearched.value = res.value[0].folder.id
     if (pathExist) {
   

@@ -18,7 +18,6 @@ const slider = ref(null)
 const toslide = ref(null)
 
 onMounted(()=> {
-    console.log(slider.value)
     slider.value?.addEventListener('input', () => {
         const width = slider.value.value;
         toslide.value.style.width = width/10 + '%';

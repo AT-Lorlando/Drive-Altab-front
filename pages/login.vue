@@ -38,7 +38,6 @@ export default {
   },
   methods: {
     login() {
-        console.log('Try to log')
       // document event to say that the user is logged
       axios.post(baseURL+'/login', {
         email: this.email,
@@ -46,17 +45,13 @@ export default {
         remember: this.remember,
       })
       .then(response => {
-        console.log('Try to log', response.status)
         if(response.status === 200) {
-          console.log('Login...', response)
           let user = response.data.user
-          console.log(user)
           localStorage.setItem('isLogged', true)
           this.$router.push('/')
           document.dispatchEvent(new Event('session-change'))
         }        
       }).catch(error => {
-        console.log('Try to log', error)
       })
     }
   }

@@ -80,7 +80,6 @@ const fullsize = ref(null);
 const photo = inject("focusedFile");
 
 watch(photo, (newPhoto) => {
-  console.log(newPhoto);
   if (newPhoto) {
     setPhoto(newPhoto);
   }
@@ -114,16 +113,7 @@ function previousPage() {
   emit("previousPage");
 }
 
-function askforHelp() {
-  console.log("Ask for help");
-}
-
-function askforEdit() {
-  console.log("Ask for edit");
-}
-
 function setPhoto(photo) {
-  console.log("set photo", photo);
   informations.value = [
     {
       name: "Nom",
@@ -147,7 +137,6 @@ function setPhoto(photo) {
     },
   ];
   fullsize.value = `${baseURL}${photo.data.url}`;
-  console.log(`${baseURL}${photo.data.url}`);
 }
 
 onMounted(() => {

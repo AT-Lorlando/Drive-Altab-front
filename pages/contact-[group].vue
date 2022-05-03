@@ -157,7 +157,6 @@ function openMailto() {
 }
 
 onMounted(() => {
-  console.log(navigator);
   let contactType = route.params.group;
   if(contactType == "me") {
   }
