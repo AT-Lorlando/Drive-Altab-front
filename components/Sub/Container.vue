@@ -327,7 +327,7 @@ function draw_Folder() {
 const focusedFile = inject('focusedFile');
 let fileIndex = null;
 let folderDisplay = null; // The element used to display the folder
-const baseURL = "https://api.drive.altab.tech/api";
+const baseURL = "https://api.drive.altab.tech";
 
 const props = defineProps({
   folder: {
