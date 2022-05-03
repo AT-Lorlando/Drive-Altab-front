@@ -1,14 +1,13 @@
 <template>
-  <div class="flex flex-col items-center w-full h-full bg-primary-dark text-white">
+  <div class="flex flex-col pl-16 xl:pl-0 items-center w-full h-full bg-primary-dark text-white">
     <div class="w-3/5 text-center self-center text-8xl mt-20" v-if="pending">Loading ...</div>
     <div class="w-3/5 text-center self-center text-8xl mt-20" v-else-if="error">Une erreur est survenue. <br>Désolé!</div>
-    <div v-else class="w-full">
-      <div class="flex flex-row w-full justify-between items-center px-12">
-      <div class="flex flex-row items-center">
-        <SubPath @pathClick="onPathClick" />
-        <p v-if="totalFiles" class="ml-8 text-3xl">({{totalFiles}})</p>
-      </div>
-        <p v-if="lastPage" class="text-3xl">{{ page }}/{{lastPage}}</p>
+    <div v-else class="w-full h-full">
+      <div class="fixed pt-4 flex flex-row w-full justify-arround items-center bg-primary-dark z-20">
+        <div class=" flex flex-row items-center">
+          <SubPath @pathClick="onPathClick" />
+        </div>
+        <p v-if="lastPage" class="text-xl xl:text-3xl pl-6">{{ page }}/{{lastPage}}</p>
       </div>
       <SubContainer
         :folder="
@@ -17,7 +16,7 @@
         @sceneClick="onSceneClick"
       />
       <div
-        v-if="lastPage.value > 1"
+        v-if="lastPage.value > 1 && isTallEnough"
         v-show="!showPhotoModal && !showLockedModal"
         class="absolute flex flex-row w-full justify-between inset-0 px-4 z-20 h-20 top-1/2"
       >
@@ -27,6 +26,13 @@
         <button class="bg-transparent h-auto" @click="nextPage">
           <IconsRightArrow class="icons" />
         </button>
+      </div>
+      <div
+        v-else-if="!isTallEnough"
+        v-show="!showPhotoModal && !showLockedModal"
+        class="fixed bottom-0 w-full z-20 pb-4"
+      >
+        <AltabButton Type="bibutton" Title="Page précédente" biTitle="Page suivante" Size="small" color="white" :biclick="nextPage" :click="previousPage" />
       </div>
     </div>
 
@@ -70,6 +76,7 @@ const props = defineProps({
   },
 });
 const baseURL = "https://api.drive.altab.tech/api";
+const isTallEnough = ref(true)
 const showPhotoModal = ref(false);
 const showLockedModal = ref(false);
 const photoDisplayed = ref(null);
@@ -205,6 +212,7 @@ function fullscreen() {
 }
 
 onMounted(() => {
+  isTallEnough.value = window.innerWidth > 1280;
   document.addEventListener("go-home", (e) => {
     closePhotoModal();
     closeLockedModal();

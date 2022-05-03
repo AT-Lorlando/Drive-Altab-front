@@ -1,18 +1,29 @@
 <template>
-    <div class="flex flex-row p-4 justify-between items-center w-full z-20">
-        <div class="flex flex-row space-x-2 xl:space-x-10 pl-4">
+    <div class="fixed left-0 flex flex-col py-4 justify-arround items-center w-16 h-screen z-40">
+        <div class="flex flex-col space-y-10">
             <IconsMenu @click="goHome" class="icons" />
-            <MolleculesInputCommand class="pl-4"/>
-            <AltabButton Type="link" Route="/about" Title="A propos" Color="white" Size="medium"/>
-            <AltabButton Type="link" Route="/contact-me" Title="Contact" Color="white" Size="medium"/>
-            <AltabButton Type="link" Route="/exemples" Title="Retouches" Color="white" Size="medium"/>
+            <!-- <MolleculesInputCommand/> -->
+            <NuxtLink to="/about" class="text-white">
+                <IconsUser class="icons"/>
+            </NuxtLink>
+            <NuxtLink to="/contact-me" class="text-white">
+                <IconsUser class="icons"/>
+            </NuxtLink>
+            <NuxtLink to="/exemples" class="text-white">
+                <IconsUser class="icons"/>
+            </NuxtLink>
         </div>
 
-        <div v-if="!isLogged" class="flex flex-row space-x-4 items-center pr-4">
-            <AltabButton Type="link" Route="/login" Title="Se connecter" Color="black" Size="medium"/>
-            <AltabButton Type="link" Route="/register" Title="S'inscrire" Color="white" Size="medium"/>
+
+        <div v-if="!isLogged" class="flex flex-col space-y-10 items-center mt-10">
+            <NuxtLink to="/login" class=" text-white">
+                <IconsUser class="icons"/>
+            </NuxtLink>
+            <NuxtLink to="/register" class=" text-white">
+                <IconsExit class="icons"/>
+            </NuxtLink>
         </div>
-        <div v-else class="flex flex-row space-x-10 items-center pr-4">
+        <div v-else class="flex flex-col space-y-10 items-center">
         <NuxtLink to="/user" class="flex flex-row justify-center items-center text-white space-x-4">
             <p>
                 {{user}}

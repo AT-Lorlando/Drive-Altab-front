@@ -12,7 +12,7 @@ export default defineNuxtConfig({
     title: "Altab Drive",
     meta: [
       { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=100%, initial-scale=1" },
       {
         hid: "description",
         name: "description",

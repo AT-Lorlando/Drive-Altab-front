@@ -23,7 +23,7 @@
 
 <script>
 import axios from 'axios'
-const baseURL = "https://api.drive.altab.tech/api";
+const baseURL = "https://api.drive.altab.tech/admin";
 
 // const { $store } = useNuxtApp()
 

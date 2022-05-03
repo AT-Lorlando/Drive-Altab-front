@@ -1,5 +1,5 @@
 <template>
-    <div class="w-auto text-white text-4xl z-10">
+    <div class="w-auto text-white text-xl xl:text-4xl z-10">
       <button v-for="f in path" class="pathButton" @click="$emit('pathClick', f)">
         {{ `/` + f?.name }}
       </button>

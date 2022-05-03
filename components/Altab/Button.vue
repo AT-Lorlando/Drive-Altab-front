@@ -68,6 +68,7 @@ export default {
   data() {
     let add_class = "";
     if (this.Size == "small") {
+      add_class += this.Type == 'bibutton' ? "w-40 " : "w-30 "
       if (this.Color == "black") {
           add_class+=
             "bg-primary-dark hover:bg-opacity-0 text-white hover:text-black border hover:border-primary-dark hover:scale-110 "

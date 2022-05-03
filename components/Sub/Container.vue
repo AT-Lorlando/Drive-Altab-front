@@ -145,6 +145,16 @@ function init() {
   const light = new THREE.DirectionalLight(0xffffff, 0.5);
   light.position.set(1, 1, 1);
   defaultScene.add(light);
+
+  window.addEventListener("resize", onWindowResize, false);
+}
+
+function onWindowResize() {
+  size = canvas.getBoundingClientRect();
+  renderer.setSize(size.width, size.height);
+  cameraGlobal.aspect = size.width / size.height;
+  cameraGlobal.updateProjectionMatrix();
+  // draw_Folder()
 }
 
 function onMouseMove(event, size, camera) {
@@ -230,11 +240,12 @@ function render() {
     obj.rotation.y = ((Math.cos(t / 4 + Math.PI / 2) * Math.PI) / 2) * 0.5;
 
     const rect = renderer.domElement.getBoundingClientRect();
+
     const width = rect.right - rect.left;
     const height = rect.bottom - rect.top;
 
-    renderer.setViewport(0, 0, width, height);
-    renderer.setScissor(0, 0, width, height);
+    renderer.setViewport(0, scroll, width, height);
+    renderer.setScissor(0, scroll, width, height);
     renderer.render(scene, cameraGlobal);
 
     let tempStarsArray = [];
@@ -267,10 +278,12 @@ function render() {
         const camera = s.getObjectByName("camera");
         const rect = s.userData.size;
         // set the viewport
+        const scroll = window.scrollY;
+        // console.log(rect.top, scroll);
         const width = rect.right - rect.left;
         const height = rect.bottom - rect.top;
         const left = rect.left;
-        const bottom = renderer.domElement.clientHeight - rect.bottom;
+        const bottom = renderer.domElement.clientHeight - rect.bottom + scroll;
         renderer.setViewport(left, bottom, width, height);
         renderer.setScissor(left, bottom, width, height);
         // camera.position.y = Math.cos( t + index ) *0.8  ;
@@ -351,7 +364,7 @@ function onClick(f, i) {
 }
 
 onMounted(() => {
-    // canvas = document.getElementById(`threecanvas`);
+    canvas = document.getElementById(`threecanvas`);
     folderDisplay = document.getElementById("folderDisplay");
     init();
     animate();
@@ -371,9 +384,9 @@ onUnmounted(() => {
 <template>
   <ul
     id="folderDisplay"
-    class="grid grid-cols-5 w-full overflow-y-auto pt-12 px-12"
+    class="grid xl:grid-cols-5 grid-cols-1 w-full overflow-y-auto pt-16 px-12 pb-16 xl:pb-0"
   >
-    <li v-for="(f,index) in props.folder" @click="onClick(f, index)" class="text-white text-xl z-10 hover:cursor-pointer flex flex-col items-center">
+    <li v-for="(f,index) in props.folder" @click="onClick(f, index)" class="text-white text-xl z-0 hover:cursor-pointer flex flex-col items-center">
       <h1 class="text-xl">
         {{f.name || f.title}}
       </h1>
