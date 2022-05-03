@@ -212,7 +212,8 @@ function fullscreen() {
 }
 
 onMounted(() => {
-  isTallEnough.value = window.innerWidth > 1280;
+  isTallEnough.value = window.innerWidth > 1280 && !((/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ||
+      (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.platform))) ? true:false);;
   document.addEventListener("go-home", (e) => {
     closePhotoModal();
     closeLockedModal();
