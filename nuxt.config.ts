@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     },
   },
   head: {
-    title: "Altab Drive",
+    title: "AltabDrive",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -19,7 +19,7 @@ export default defineNuxtConfig({
         content: "Altab Drive project",
       },
     ],
-    link: [{ rel: "icon", type: "png", href: "@/assets/imgs/icon.png" }],
+    link: [{ rel: "icon", type: "png", href: "/icon.png" }],
   },
   loading: { color: "#3B8070" },
 });
