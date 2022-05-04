@@ -17,6 +17,7 @@
       <form
         class="w-full mt-4 grid gap-6 font-text text-lg"
         name="contact"
+        id="contactForm"
         netlify
         data-netlify-honeypot="bot-field"
         @submit.prevent="handleSubmit"
@@ -68,31 +69,17 @@ const mailObject = ref("")
 const message = ref("")
 let preMailObject = ""
 
-function createFormDataObj(data) {
-  const formData = new FormData();
-  for (const key of Object.keys(data)) {
-    formData.append(key, data[key]);
-  }
-  return formData;
-}
-
-function handleSubmit() {
-  console.log(email.value, name.value, mailObject.value, message.value);
+function handleSubmit(e) {
+  e.preventDefault();
   if (email.value == "" || name.value == "" || mailObject.value == "" || message.value == "") {
     error.value = "Invalid input. Please verify any informations provided.";
   } else {
-    const data = {
-      "form-name": "contact",
-      email: email.value,
-      name: name.value,
-      mailObject: mailObject.value,
-      message: message.value,
-      photo: id.value ? id.value : 0,
-    };
+    const form = document.getElementById("contactForm");
+    let formData = new FormData(form);
     fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(createFormDataObj(data)).toString(),
+      body: new URLSearchParams(formData).toString(),
     })
       .then((res) => {
         if (res.ok) {

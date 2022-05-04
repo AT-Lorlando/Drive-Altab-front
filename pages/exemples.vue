@@ -1,6 +1,6 @@
 <template>
     <div class="w-full h-screen xl:h-full bg-primary-dark flex flex-col text-white text-xl z-20">
-        <div class="w-4/5 xl:w-2/5 h-full self-center pl-8 xl:pl-0 mt-10 xl:mt-20 items-center flex flex-col text-center space-y-10">
+        <div class="w-4/5 xl:w-2/5 h-full self-center pl-8 xl:pl-0 mt-10 xl:mt-20 items-center flex flex-col text-center space-y-10 overscroll-y-auto">
             <h2>
             Exemple de retouche
             </h2>
@@ -24,6 +24,6 @@
 
 <style scoped>
 h2 {
-    @apply text-3xl mt-4 mb-2
+    @apply text-xl xl:text-3xl mt-4 mb-2
 }
 </style>
