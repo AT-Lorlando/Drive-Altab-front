@@ -84,7 +84,7 @@ function handleSubmit(e) {
   if (email.value == "" || name.value == "" || mailObject.value == "" || message.value == "") {
     error.value = "Invalid input. Please verify any informations provided.";
   } else {
-    fetch("/", {
+    $fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: encode({
