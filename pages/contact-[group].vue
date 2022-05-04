@@ -57,6 +57,7 @@
 </template>
 
 <script setup>
+import axios from 'axios'
 import { KinesisContainer, KinesisElement } from "vue-kinesis";
 const route = useRoute()
 const objectInput = ref(null)
@@ -80,20 +81,19 @@ function encode(data) {
 }
 
 function handleSubmit(e) {
-  e.preventDefault();
   if (email.value == "" || name.value == "" || mailObject.value == "" || message.value == "") {
     error.value = "Invalid input. Please verify any informations provided.";
   } else {
-    $fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: encode({
+    axios.post("/", encode({
         "form-name": e.target.getAttribute("name"),
         ...name,
+        ...email,
+        ...mailObject,
+        ...message,
       }),
-  })
+  {header: { "Content-Type": "application/x-www-form-urlencoded" }})
       .then((res) => {
-        if (res.ok) {
+        if (res.status === 200) {
           confirm.value = "Your message has been sent. Thank you!";
         } else {
           error.value = "An error occured. Please try again later.";
