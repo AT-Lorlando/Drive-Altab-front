@@ -7,7 +7,7 @@
         <div class=" flex flex-row items-center">
           <SubPath @pathClick="onPathClick" />
         </div>
-        <p v-if="lastPage" class="text-xl xl:text-3xl pl-6">{{ page }}/{{lastPage}}</p>
+        <p class="text-xl xl:text-3xl pl-6">{{ page }}/{{lastPage}}</p>
       </div>
       <SubContainer
         :folder="
@@ -16,7 +16,7 @@
         @sceneClick="onSceneClick"
       />
       <div
-        v-if="lastPage.value > 1 && isTallEnough"
+        v-if="isTallEnough"
         v-show="!showPhotoModal && !showLockedModal"
         class="absolute flex flex-row w-full justify-between inset-0 px-4 z-20 h-20 top-1/2"
       >
@@ -28,7 +28,7 @@
         </button>
       </div>
       <div
-        v-else-if="lastPage.value > 1 && !isTallEnough"
+        v-else-if="!isTallEnough.value"
         v-show="!showPhotoModal && !showLockedModal"
         class="fixed bottom-0 w-full z-20 pb-4"
       >
@@ -98,6 +98,7 @@ const { pending, data: folderData, refresh, error } = useLazyAsyncData("folderDa
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",      
     },
     params: {
       page: page.value,

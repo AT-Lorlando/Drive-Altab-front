@@ -86,7 +86,7 @@ export default {
   data() {
     let add_class = "";
     if (this.Size == "small") {
-      add_class += this.Type == 'bibutton' || 'bilink' ? "w-40 " : "w-30 "
+      add_class += this.Type == 'bibutton' || 'bilink' ? "w-48 " : "w-30 "
       if (this.Color == "black") {
           add_class+=
             "bg-primary-dark hover:bg-opacity-0 text-white hover:text-black border hover:border-primary-dark hover:scale-110 "
@@ -98,7 +98,7 @@ export default {
             "text-white border-white bg-transparent hover:bg-white hover:text-black border border-primary-dark hover:border-white hover:scale-110 "
       }
     } else if (this.Size == "medium") {
-      add_class += this.Type == 'bibutton' || 'bilink' ? "w-20 " : "w-40 "
+      add_class += this.Type == 'bibutton' || this.Type == 'bilink' ? "w-20 " : "w-48 "
       if (this.Color == "black") {
           add_class+=
             "bg-primary-dark hover:bg-white text-white hover:text-black border hover:border-primary-dark hover:scale-105 "
@@ -111,16 +111,20 @@ export default {
       }
     }
     else if (this.Size == "large") {
-      add_class += this.Type == 'bibutton' || 'bilink' ? "w-40 " : "w-80 "
+      if (this.Type == 'bibutton' || this.Type == 'bilink') {
+        add_class += "w-40 "
+      } else {
+        add_class += "w-80 "
+      }
       if (this.Color == "black") {
           add_class+=
-            "bg-primary-dark hover:bg-white text-white hover:text-black border hover:border-primary-dark hover:scale-105 "
+            "w-80 bg-primary-dark hover:bg-white text-white hover:text-black border hover:border-primary-dark hover:scale-105 "
       } else if (this.Color == "transparent") {
           add_class+=
-            "bg-transparent hover:bg-primary-dark hover:text-white border border-primary-dark hover:border-white hover:scale-105 "
+            "w-80 bg-transparent hover:bg-primary-dark hover:text-white border border-primary-dark hover:border-white hover:scale-105 "
       } else if (this.Color == "white") {
           add_class+=
-            "text-white bg-transparent hover:bg-white hover:text-black border border-primary-dark hover:border-white hover:scale-105 "
+            "w-80 text-white bg-transparent hover:bg-white hover:text-black border border-primary-dark hover:border-white hover:scale-105 "
       }
     }
     return {

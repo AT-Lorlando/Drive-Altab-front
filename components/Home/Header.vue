@@ -3,9 +3,9 @@
         <div class="flex flex-row space-x-2 xl:space-x-10 pl-4">
             <IconsMenu @click="goHome" class="icons" />
             <MolleculesInputCommand class="pl-4"/>
-            <AltabButton Type="link" Route="/about" Title="A propos" Color="white" Size="medium"/>
-            <AltabButton Type="link" Route="/contact-me" Title="Contact" Color="white" Size="medium"/>
-            <AltabButton Type="link" Route="/exemples" Title="Retouches" Color="white" Size="medium"/>
+            <AltabButton class="w-48" Type="link" Route="/about" Title="A propos" Color="white" Size="medium"/>
+            <AltabButton class="w-48" Type="link" Route="/contact-me" Title="Contact" Color="white" Size="medium"/>
+            <AltabButton class="w-48" Type="link" Route="/exemples" Title="Retouches" Color="white" Size="medium"/>
         </div>
     </div>
 </template>

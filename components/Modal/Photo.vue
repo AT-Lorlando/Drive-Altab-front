@@ -111,7 +111,7 @@
 
 <script setup>
 const emit = defineEmits(["close", "next", "previous", "nextPage", "previousPage"]);
-const baseURL = "https://api.drive.altab.tech/api";
+const baseURL = "https://api.drive.altab.tech";
 
 let informations = ref([]);
 const showFullscreen = ref(false);
@@ -179,7 +179,7 @@ function setPhoto(photo) {
       value: photo.data.format,
     },
   ];
-  fullsize.value = `${baseURL}${photo.data.url}`.replace('/api/uploads','/uploads');
+  fullsize.value = `${baseURL}${photo.data.url}`
 }
 const isTallEnough = ref(true)
 
