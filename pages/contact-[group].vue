@@ -1,5 +1,5 @@
 <template>
-  <KinesisContainer class="w-full h-screen xl:h-full z-20 overflow-clip bg-primary-dark xl:pl-0 pl-8">
+  <KinesisContainer class="w-full h-screen z-20 overflow-clip bg-primary-dark xl:pl-0 pl-8">
     <KinesisElement
       class="flex flex-col items-center pl-8 xl:pl-0 xl:w-4/5 h-full m-auto text-white"
       :strength="4"

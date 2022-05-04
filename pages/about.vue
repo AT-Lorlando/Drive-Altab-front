@@ -5,13 +5,13 @@
             Qu'est-ce qu'Altab ?
             </h2>
             <p>
-            Altab est une entreprise de communication digitale. Ce domaine regroupe aussi bien la prise de photo que le developpement de site ou d'applications. drive.altab.tech est un site de gestion de photos, regroupant mes photos pour les partagers et pour vous permettre de les consulter/télécharger avec la meilleure qualité possible. Ce site permet aussi de me contacter si vous avez une demande particulère telle que la retouche d'une photo.
+            Altab est une entreprise de communication digitale. Ce domaine regroupe aussi bien la prise de photos que le développement de sites ou d'applications. Ce site me permet de regrouper mes photos les regroupant pour les partager et pour vous permettre de les consulter/télécharger avec la meilleure qualité possible. Ce site permet aussi de me contacter si vous avez une demande particulère telle que la retouche d'une photo.
             </p>
             <h2>
             Que puis-je faire avec ces photos ?
             </h2>
             <p>
-            Les photos auxquelles vous avez accès sont libre de droit. Certains dossiers peuvent être protégés par un mot de passe, les photos contenues dans ce dossier sont libre de droit pour ceux ayant accès au dossier.
+            Les photos auxquelles vous avez accès sont libres de droit. Certains dossiers peuvent être protégés par un mot de passe, les photos contenues dans ce dossier sont libres de droit pour ceux ayant accès au dossier.
             <br>
             Si une photo vous plaît, vous pouvez donc la télécharger et l'utiliser. Vous pouvez aussi me demander de la retoucher/de l'editer pour l'enjoliver.
             </p>
