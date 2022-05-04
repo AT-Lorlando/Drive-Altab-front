@@ -128,7 +128,7 @@ onMounted(() => {
     mailObject.value = preMailObject;
   }
 
-  document.getElementById("contactForm").addEventListener("submit", handleSubmit);
+  document.getElementById("contactForm").addEventListener("submit", handleSubmit(e));
 });
 </script>
 
