@@ -21,7 +21,6 @@
         netlify
         method="post"
         data-netlify-honeypot="bot-field"
-        @submit.prevent="handleSubmit"
       >
         <p class="hidden">
           <label>Don't fill this out if you're human: <input name="bot-field" /></label>
@@ -49,7 +48,7 @@
           <p class="underline cursor-pointer self-center" @click="openMailto">
             contact@altab.tech
           </p>
-          <AltabButton type="submit" Title="Envoyer" Color="black" Size="medium" />
+          <AltabButton @click="handleSubmit" type="submit" Title="Envoyer" Color="black" Size="medium" />
         </div>
       </form>
     </KinesisElement>
