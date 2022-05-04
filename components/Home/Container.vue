@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col pl-16 xl:pl-0 items-center w-full h-full bg-primary-dark text-white">
-    <div class="w-3/5 text-center self-center text-8xl mt-20" v-if="pending">Loading ...</div>
-    <div class="w-3/5 text-center self-center text-8xl mt-20" v-else-if="error">Une erreur est survenue. <br>Désolé!</div>
+    <div class="w-full xl:w-3/5 text-center self-center text-2xl xl:text-5xl mt-20" v-if="pending">Loading ...</div>
+    <div class="w-full xl:w-3/5 text-center self-center text-2xl xl:text-5xl mt-20" v-else-if="error">Une erreur est survenue. <br>Désolé!</div>
     <div v-else class="w-full h-full">
-      <div class="fixed pt-4 flex flex-row w-full justify-arround items-center bg-primary-dark z-20">
+      <div class="fixed pt-4 xl:pl-16 flex flex-row w-full justify-arround items-center bg-primary-dark z-20">
         <div class=" flex flex-row items-center">
           <SubPath @pathClick="onPathClick" />
         </div>
@@ -28,7 +28,7 @@
         </button>
       </div>
       <div
-        v-else-if="!isTallEnough"
+        v-else-if="lastPage.value > 1 && !isTallEnough"
         v-show="!showPhotoModal && !showLockedModal"
         class="fixed bottom-0 w-full z-20 pb-4"
       >
