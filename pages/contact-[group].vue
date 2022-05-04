@@ -95,7 +95,9 @@ function handleSubmit(e) {
               "Accept": "application/json" }})
       .then((res) => {
         if (res.status === 200) {
-          confirm.value = "Your message has been sent. Thank you!";
+          error.value = "An error occured. Please try again later.";
+
+          // confirm.value = "Your message has been sent. Thank you!";
         } else {
           error.value = "An error occured. Please try again later.";
         }
