@@ -1,14 +1,14 @@
 <template>
-    <div class="w-full h-full bg-primary-dark flex flex-col justify-center text-white text-xl z-20">
-        <div class="w-2/5 self-center justify-center items-center flex flex-col text-center">
+    <div class="w-full h-full bg-primary-dark flex flex-col justify-center text-white text-base xl:text-xl z-20">
+        <div class="xl:pl-0 pl-8 w-4/5 xl:w-2/5 self-center justify-center items-center flex flex-col text-center">
             <h2>
-            Qu'est-ce qu'Altab ?
+            Qu'est-ce qu'Altab ?
             </h2>
             <p>
             Altab est une entreprise de communication digitale. Ce domaine regroupe aussi bien la prise de photo que le developpement de site ou d'applications. drive.altab.tech est un site de gestion de photos, regroupant mes photos pour les partagers et pour vous permettre de les consulter/télécharger avec la meilleure qualité possible. Ce site permet aussi de me contacter si vous avez une demande particulère telle que la retouche d'une photo.
             </p>
             <h2>
-            Que puis-je faire avec ces photos ?
+            Que puis-je faire avec ces photos ?
             </h2>
             <p>
             Les photos auxquelles vous avez accès sont libre de droit. Certains dossiers peuvent être protégés par un mot de passe, les photos contenues dans ce dossier sont libre de droit pour ceux ayant accès au dossier.
@@ -30,6 +30,6 @@
 </script>
 <style scoped>
 h2 {
-    @apply text-3xl mt-4 mb-2
+    @apply text-xl xl:text-3xl mt-4 mb-2
 }
 </style>

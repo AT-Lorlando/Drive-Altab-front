@@ -4,77 +4,28 @@
             <IconsMenu @click="goHome" class="icons" />
             <!-- <MolleculesInputCommand/> -->
             <NuxtLink to="/about" class="text-white">
-                <IconsUser class="icons"/>
+                <IconsAbout class="icons"/>
             </NuxtLink>
             <NuxtLink to="/contact-me" class="text-white">
-                <IconsUser class="icons"/>
+                <IconsContact class="icons"/>
             </NuxtLink>
             <NuxtLink to="/exemples" class="text-white">
-                <IconsUser class="icons"/>
+                <IconsImage class="icons"/>
             </NuxtLink>
-        </div>
-
-
-        <div v-if="!isLogged" class="flex flex-col space-y-10 items-center mt-10">
-            <NuxtLink to="/login" class=" text-white">
-                <IconsUser class="icons"/>
-            </NuxtLink>
-            <NuxtLink to="/register" class=" text-white">
-                <IconsExit class="icons"/>
-            </NuxtLink>
-        </div>
-        <div v-else class="flex flex-col space-y-10 items-center">
-        <NuxtLink to="/user" class="flex flex-row justify-center items-center text-white space-x-4">
-            <p>
-                {{user}}
-            </p>
-            <IconsUser class="icons"/>
-        </NuxtLink>
-            <!-- <IconsGear class="icons"/> -->
-            <IconsExit class="icons" @click="logout"/>
         </div>
     </div>
 </template>
 
 <script setup>
-import axios from "axios";
-const baseURL = "https://api.drive.altab.tech/api";
-const isLogged = ref(false)
-const user = ref({})
 const router = useRouter()
 
-function logout() {
-    axios.get(baseURL+'/logout',{ withCredentials: true })
-    .then(response => {
-        isLogged.value = false
-    }).catch(error => {
-    })
-    // document.dispatchEvent(new Event('session-change'))
-    // localStorage.setItem('isLogged', false)
-}
+
 
 function goHome() {
     // Document emit event
     router.push('/')
     document.dispatchEvent(new Event('go-home'))
 }
-
-onMounted(() => {
-    document.addEventListener("session-change", () => {
-        isLogged.value = localStorage.getItem("isLogged")
-        user.value = localStorage.getItem("user.name")
-    })
-    axios.get(`${baseURL}/session`,{ withCredentials: true })
-        .then(res => {
-            if(res.status === 200) {
-                isLogged.value = true
-                user.value = res.data.user
-                localStorage.setItem('isLogged', true)
-                document.dispatchEvent(new Event('session-change'))
-            }
-        }).catch(err => {
-        })    
-})
 </script>
 
 <style scoped>

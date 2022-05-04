@@ -154,7 +154,7 @@ function onWindowResize() {
   renderer.setSize(size.width, size.height);
   cameraGlobal.aspect = size.width / size.height;
   cameraGlobal.updateProjectionMatrix();
-  // draw_Folder()
+  draw_Folder()
 }
 
 function onMouseMove(event, size, camera) {
@@ -384,7 +384,7 @@ onUnmounted(() => {
 <template>
   <ul
     id="folderDisplay"
-    class="grid xl:grid-cols-5 grid-cols-1 w-full overflow-y-auto pt-16 px-12 pb-16 xl:pb-0"
+    class="grid xl:grid-cols-5 grid-cols-1 w-full overflow-y-auto pt-16 xl:pt-20 px-12 pb-16 xl:pb-0"
   >
     <li v-for="(f,index) in props.folder" @click="onClick(f, index)" class="text-white text-xl z-0 hover:cursor-pointer flex flex-col items-center">
       <h1 class="text-xl">

@@ -1,8 +1,8 @@
 <template>
   <div
-    class="absolute mt-20 z-20 w-full h-4/6 flex flex-row text-white justify-between items-center"
+    class="absolute xl:mt-20 z-20 w-full h-full xl:h-4/6 flex flex-col xl:flex-row text-white justify-between items-center"
   >
-    <div class="w-1/3 h-full p-4">
+    <div v-if="isTallEnough" class="w-1/3 h-full p-4">
       <h1 class="text-3xl">Informations sur la photo</h1>
       <div class="flex flex-col space-y-1 m-4">
         <div v-for="i in informations" class="flex flex-row w-1/2 justify-between">
@@ -11,8 +11,16 @@
         </div>
       </div>
     </div>
-
-    <div class="flex flex-row w-1/3 justify-between px-4 h-full">
+    <div v-else class="w-4/5 p-4 mt-10">
+      <h1 class="text-base">Informations sur la photo:</h1>
+      <div class="grid grid-cols-2 space-y-1">
+        <div v-for="i in informations" class="flex flex-row w-1/2 justify-between">
+          <p class="text-sm text-center pb-1">{{ i.name }}:</p>
+          <p class="text-sm text-center pb-1">{{ i.value }}</p>
+        </div>
+      </div>
+    </div>
+    <div v-if="isTallEnough" class="flex flex-row w-1/3 justify-between px-4 h-full">
       <button class="bg-transparent" @click="previous">
         <IconsLeftArrow class="icons" />
       </button>
@@ -24,7 +32,7 @@
         <IconsRightArrow class="icons" />
       </button>
     </div>
-    <div class="w-1/3 h-auto px-4 pl-20 space-y-8 my-auto flex flex-col">
+    <div v-if="isTallEnough" class="w-1/3 h-auto px-4 pl-20 space-y-8 my-auto flex flex-col">
       <AltabButton :click="download" Title="Télécharger" Color="black" Size="large" />
       <AltabButton
         Type="link"
@@ -52,6 +60,37 @@
         biTitle="Page suivante"
       />
     </div>
+    <div v-else class="w-full h-auto flex flex-col space-y-4 mb-2">
+      <AltabButton
+        Type="bibutton"
+        :click="previous"
+        :biclick="next"
+        Title="Photo précédente"
+        Color="black"
+        Size="large"
+        biTitle="Photo suivante"
+      />
+      <AltabButton
+        Type="bibutton"
+        :click="download"
+        :biclick="close"
+        Title="Télécharger"
+        Color="black"
+        Size="large"
+        biTitle="Fermer"
+      />
+      <AltabButton class="w-80" Type="link" Route="/exemples" Title="Voir des exemples de retouches" Color="black" Size="large" />
+      <AltabButton
+        Type="bilink"
+        :Route="`/contact-help${photo.id}`"
+        :biRoute="`/contact-edit${photo.id}`"
+        Title="Demander de l'aide"
+        biTitle="Demander une retouche"
+        Color="black"
+        Size="large"
+      />
+    </div>
+
     <div
       v-if="showFullscreen"
       class="fixed z-30 flex flex-col w-full h-full items-center justify-center bg-white bg-opacity-20"
@@ -84,6 +123,10 @@ watch(photo, (newPhoto) => {
     setPhoto(newPhoto);
   }
 });
+
+function download () {
+  window.open(`${fullsize.value}`);
+}
 
 function fullscreen() {
   showFullscreen.value = true;
@@ -125,7 +168,7 @@ function setPhoto(photo) {
     },
     {
       name: "Taille",
-      value: (photo.data.size * 0.00095367432).toFixed(2) + " Mb",
+      value: (photo.data.size * 0.00095367432).toFixed(2) + "Mb",
     },
     {
       name: "Dimensions",
@@ -136,10 +179,13 @@ function setPhoto(photo) {
       value: photo.data.format,
     },
   ];
-  fullsize.value = `${baseURL}${photo.data.url}`;
+  fullsize.value = `${baseURL}${photo.data.url}`.replace('/api/uploads','/uploads');
 }
+const isTallEnough = ref(true)
 
 onMounted(() => {
+  isTallEnough.value = window.innerWidth > 1280 && !((/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ||
+      (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.platform))) ? true:false);;
   setPhoto(photo.value);
 });
 </script>
