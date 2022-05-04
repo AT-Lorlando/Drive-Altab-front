@@ -7,7 +7,7 @@
     >
       <!-- <h3 class="mt-32 Text"> Contact us </h3> -->
       <div
-        class="mt-8 text-white uppercase duration-1000 lg:mt-16 stroke font-montserrat ease-out-quint whitespace-nowrap"
+        class="mt-8 text-white uppercase duration-1000 lg:mt-16 stroke ease-out-quint whitespace-nowrap"
       >
         <h3 class="text-xl uppercase">Contact</h3>
       </div>
@@ -22,10 +22,10 @@
         method="post"
         data-netlify-honeypot="bot-field"
       >
+        <input type="hidden" name="form-name" value="contactDrive" />
         <p class="hidden">
           <label>Don't fill this out if you're human: <input name="bot-field" /></label>
         </p>
-        <input type="hidden" name="form-name" value="contactDrive" />
 
         <div class="containerInput">
           <AltabAppAtIcon class="icons" />
@@ -48,7 +48,7 @@
           <p class="underline cursor-pointer self-center" @click="openMailto">
             contact@altab.tech
           </p>
-          <AltabButton @click="handleSubmit" type="submit" Title="Envoyer" Color="black" Size="medium" />
+          <AltabButton type="submit" Title="Envoyer" Color="black" Size="medium" />
         </div>
       </form>
     </KinesisElement>
@@ -80,6 +80,7 @@ function encode(data) {
 }
 
 function handleSubmit(e) {
+  e.preventDefault();
   if (email.value == "" || name.value == "" || mailObject.value == "" || message.value == "") {
     error.value = "Invalid input. Please verify any informations provided.";
   } else {
@@ -90,7 +91,8 @@ function handleSubmit(e) {
         ...mailObject,
         ...message,
       }),
-  {header: { "Content-Type": "application/x-www-form-urlencoded" }})
+  {header: { "Content-Type": "application/x-www-form-urlencoded",
+              "Accept": "application/json" }})
       .then((res) => {
         if (res.status === 200) {
           confirm.value = "Your message has been sent. Thank you!";
@@ -123,6 +125,8 @@ onMounted(() => {
     preMailObject = "[photo " + id.value+ "]" + " Demande d'aide";
     mailObject.value = preMailObject;
   }
+
+  document.getElementById("contactForm").addEventListener("submit", handleSubmit);
 });
 </script>
 
