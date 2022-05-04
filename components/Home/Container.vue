@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col pl-16 xl:pl-0 items-center w-full h-full bg-primary-dark text-white">
-    <h1 class="w-full xl:wl-3/5 texet-center self-center text-sm text-red-500 ml-20">Le formulaire de contact ne fonctionne pas encore, désolé!</h1>
+    <h1 class="w-full xl:wl-3/5 texet-center self-center text-sm text-red-500 pl-20">Le formulaire de contact ne fonctionne pas encore, désolé!</h1>
     <div class="w-full xl:w-3/5 text-center self-center text-2xl xl:text-5xl mt-20" v-if="pending">Loading ...</div>
     <div class="w-full xl:w-3/5 text-center self-center text-2xl xl:text-5xl mt-20" v-else-if="error">Une erreur est survenue. <br>Désolé!</div>
     <div v-else class="w-full h-full">
