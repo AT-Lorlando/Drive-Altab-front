@@ -16,16 +16,17 @@
       <p v-show="confirm" class="text-teal-500">{{ confirm }}</p>
       <form
         class="w-full mt-4 grid gap-6 font-text text-lg"
-        name="contact"
+        name="contactDrive"
         id="contactForm"
         netlify
+        method="post"
         data-netlify-honeypot="bot-field"
         @submit.prevent="handleSubmit"
       >
         <p class="hidden">
           <label>Don't fill this out if you're human: <input name="bot-field" /></label>
         </p>
-        <input type="hidden" name="form-name" value="contact" />
+        <input type="hidden" name="form-name" value="contactDrive" />
 
         <div class="containerInput">
           <AltabAppAtIcon class="icons" />
@@ -69,18 +70,28 @@ const mailObject = ref("")
 const message = ref("")
 let preMailObject = ""
 
+function encode(data) {
+  return Object.keys(data)
+    .map(
+      (key) =>
+        encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
+    )
+    .join("&");
+}
+
 function handleSubmit(e) {
   e.preventDefault();
   if (email.value == "" || name.value == "" || mailObject.value == "" || message.value == "") {
     error.value = "Invalid input. Please verify any informations provided.";
   } else {
-    const form = document.getElementById("contactForm");
-    let formData = new FormData(form);
     fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(formData).toString(),
-    })
+      body: encode({
+        "form-name": e.target.getAttribute("name"),
+        ...name,
+      }),
+  })
       .then((res) => {
         if (res.ok) {
           confirm.value = "Your message has been sent. Thank you!";
