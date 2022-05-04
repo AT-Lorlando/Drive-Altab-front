@@ -1,6 +1,6 @@
 <template>
   <div
-    class="absolute xl:mt-20 z-20 w-full h-full xl:h-4/6 flex flex-col xl:flex-row text-white justify-between items-center"
+    class="fixed xl:absolute xl:mt-20 z-20 w-full h-full xl:h-4/6 flex flex-col xl:flex-row text-white justify-between items-center"
   >
     <div v-if="isTallEnough" class="w-1/3 h-full p-4">
       <h1 class="text-3xl">Informations sur la photo</h1>
@@ -60,14 +60,14 @@
         biTitle="Page suivante"
       />
     </div>
-    <div v-else class="w-full h-auto flex flex-col space-y-4 mb-2">
+    <div v-else class="fixed left-0 bottom-0 w-full h-auto flex flex-col space-y-4 mb-2 text-sm">
       <AltabButton
         Type="bibutton"
         :click="previous"
         :biclick="next"
         Title="Photo précédente"
         Color="black"
-        Size="large"
+        Size="medium"
         biTitle="Photo suivante"
       />
       <AltabButton
@@ -76,10 +76,10 @@
         :biclick="close"
         Title="Télécharger"
         Color="black"
-        Size="large"
+        Size="medium"
         biTitle="Fermer"
       />
-      <AltabButton class="w-80" Type="link" Route="/exemples" Title="Voir des exemples de retouches" Color="black" Size="large" />
+      <AltabButton class="w-80" Type="link" Route="/exemples" Title="Voir des exemples de retouches" Color="black" Size="medium" />
       <AltabButton
         Type="bilink"
         :Route="`/contact-help${photo.id}`"
@@ -87,7 +87,7 @@
         Title="Demander de l'aide"
         biTitle="Demander une retouche"
         Color="black"
-        Size="large"
+        Size="medium"
       />
     </div>
 

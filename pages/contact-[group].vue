@@ -1,7 +1,7 @@
 <template>
   <KinesisContainer class="w-full h-screen xl:h-full z-20 overflow-clip bg-primary-dark xl:pl-0 pl-8">
     <KinesisElement
-      class="flex flex-col items-center  w-4/5 h-full m-auto text-white md:w-3/5 lg:w-2/5"
+      class="flex flex-col items-center pl-8 xl:pl-0 xl:w-4/5 h-full m-auto text-white"
       :strength="4"
       type="depth"
     >
@@ -15,7 +15,7 @@
       <p v-show="error" class="text-red-400">{{ error }}</p>
       <p v-show="confirm" class="text-teal-500">{{ confirm }}</p>
       <form
-        class="w-full mt-4 grid gap-6 font-text"
+        class="w-full mt-4 grid gap-6 font-text text-lg"
         name="contact"
         netlify
         data-netlify-honeypot="bot-field"
@@ -25,74 +25,25 @@
           <label>Don't fill this out if you're human: <input name="bot-field" /></label>
         </p>
         <input type="hidden" name="form-name" value="contact" />
-        <AltabTextInput
-          v-model="email"
-          type="email"
-          name="email"
-          placeholder="E-mail"
-          center
-        >
-          <AltabAppAtIcon />
-          <template #input="{ className, id, inputName, placeholder, value, input }">
-            <input
-              :id="id"
-              :name="inputName"
-              :value="value"
-              :placeholder="placeholder"
-              :class="className"
-              @input="input"
-            />
-          </template>
-        </AltabTextInput>
-        <AltabTextInput v-model="name" type="text" name="name" placeholder="Name" center>
-          <AltabAppPersonIcon />
-          <template #input="{ className, id, inputName, placeholder, value, input }">
-            <input
-              :id="id"
-              :name="inputName"
-              :value="value"
-              :placeholder="placeholder"
-              :class="className"
-              @input="input"
-            />
-          </template>
-        </AltabTextInput>
-        <AltabTextInput
-          v-model="object"
-          type="text"
-          name="object"
-          placeholder="Objet"
-          :value="ObjectPlaceholder"
-          center
-        >
-          <AltabAppLabelIcon />
-          <template #input="{ className, id, inputName, placeholder, value, input }">
-            <input
-              :id="id"
-              :name="inputName"
-              :value="value"
-              :placeholder="placeholder"
-              :class="className"
-              @input="input"
-            />
-          </template>
-        </AltabTextInput>
-        <AltabTextInput v-model="message" name="message" placeholder="Message">
-          <AltabAppTextIcon />
-          <template #input="{ className, id, inputName, placeholder, value, input }">
-            <textarea
-              :id="id"
-              :name="inputName"
-              :value="value"
-              :placeholder="placeholder"
-              :rows="rows"
-              class="resize-none"
-              :class="className"
-              @input="input"
-            ></textarea>
-          </template>
-        </AltabTextInput>
-        <div class="flex justify-between">
+
+        <div class="containerInput">
+          <AltabAppAtIcon class="icons" />
+          <input v-model="email" class="formInput" type="text" name="email" placeholder="Email"/>
+        </div>
+        <div class="containerInput">
+          <AltabAppPersonIcon class="icons" />
+          <input v-model="name" class="formInput" type="text" name="name" placeholder="Nom"/>
+        </div>
+        <div class="containerInput">
+          <AltabAppLabelIcon class="icons" />
+          <input ref="objectInput" v-model="mailObject" class="formInput" type="text" name="object" placeholder="Objet"/>
+        </div>
+        <div class="containerInput">
+          <AltabAppTextIcon class="icons" />
+          <textarea v-model="message" :rows="rows" class="formInput" type="text" name="message" placeholder="Votre message"/>
+        </div>
+
+        <div class="flex flex-col xl:flex-row justify-between">
           <p class="underline cursor-pointer self-center" @click="openMailto">
             contact@altab.tech
           </p>
@@ -106,15 +57,16 @@
 <script setup>
 import { KinesisContainer, KinesisElement } from "vue-kinesis";
 const route = useRoute()
-const ObjectPlaceholder = ref('')
-const email = ref("");
-const name = ref("");
-const object = ref("");
-const message = ref("");
+const objectInput = ref(null)
 const rows = ref(10);
 const error = ref("");
 const confirm = ref("");
 const id = ref(null);
+const email = ref("")
+const name = ref("")
+const mailObject = ref("")
+const message = ref("")
+let preMailObject = ""
 
 function createFormDataObj(data) {
   const formData = new FormData();
@@ -125,16 +77,17 @@ function createFormDataObj(data) {
 }
 
 function handleSubmit() {
-  if (email.value == "" || name.value == "" || object.value == "" || email.value == "") {
+  console.log(email.value, name.value, mailObject.value, message.value);
+  if (email.value == "" || name.value == "" || mailObject.value == "" || message.value == "") {
     error.value = "Invalid input. Please verify any informations provided.";
   } else {
     const data = {
       "form-name": "contact",
       email: email.value,
       name: name.value,
-      object: object.value,
+      mailObject: mailObject.value,
       message: message.value,
-      photo: id.value,
+      photo: id.value ? id.value : 0,
     };
     fetch("/", {
       method: "POST",
@@ -164,13 +117,25 @@ onMounted(() => {
   else if (contactType.match(/^edit\d+$/)) {
     id.value = contactType.replace("edit", "");
     contactType = "edit";
-    ObjectPlaceholder.value = "[photo " + id.value+ "]" + " Demande de modification"; 
+    preMailObject = "[photo " + id.value+ "]" + " Demande de modification";
+    mailObject.value = preMailObject;
+
   } else if (contactType.match(/^help\d+$/)) {
     id.value = contactType.replace("help", "");
     contactType = "help";
-    ObjectPlaceholder.value = "[photo " + id.value+ "]" + " Demande d'aide"; 
+    preMailObject = "[photo " + id.value+ "]" + " Demande d'aide";
+    mailObject.value = preMailObject;
   }
 });
 </script>
 
-<style></style>
+<style scoped>
+.formInput {
+  @apply pl-2 w-full bg-transparent focus:outline-none
+}
+
+.containerInput {
+  @apply flex flex-row rounded-md border-2 border-white pl-2 pb-1 pt-2 xl:w-full w-80
+}
+
+</style>
