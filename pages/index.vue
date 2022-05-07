@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full w-full">
+  <div class="h-full xl:pt-20">
     <HomeContainer />
   </div>  
 </template>

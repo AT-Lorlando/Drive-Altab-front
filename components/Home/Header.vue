@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-row p-4 justify-between items-center w-full z-20">
+    <div class="fixed top-0 flex flex-row p-4 justify-between items-center w-screen h-20 z-40 bg-primary-dark">
         <div class="flex flex-row space-x-2 xl:space-x-10 pl-4">
             <IconsMenu @click="goHome" class="icons" />
             <MolleculesInputCommand class="pl-4"/>

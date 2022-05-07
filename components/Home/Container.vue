@@ -1,11 +1,10 @@
 <template>
-  <div class="flex flex-col pl-16 xl:pl-0 items-center w-full h-full bg-primary-dark text-white">
-    <h1 class="w-full xl:wl-3/5 texet-center self-center text-sm text-red-500 pl-20">Le formulaire de contact ne fonctionne pas encore, désolé!</h1>
+  <div class="h-screen overflow-y-clip flex flex-col pl-16 xl:pl-0 items-center bg-primary-dark text-white">
     <div class="w-full xl:w-3/5 text-center self-center text-2xl xl:text-5xl mt-20" v-if="pending">Loading ...</div>
     <div class="w-full xl:w-3/5 text-center self-center text-2xl xl:text-5xl mt-20" v-else-if="error">Une erreur est survenue. <br>Désolé!</div>
-    <div v-else class="w-full h-full">
-      <div class="fixed pt-4 xl:pl-16 flex flex-row w-full justify-arround items-center bg-primary-dark z-20">
-        <div class=" flex flex-row items-center">
+    <div v-else class="">
+      <div class="fixed pt-4 xl:pl-16 flex flex-row w-screen overflow-clip justify-arround items-center bg-primary-dark z-20">
+        <div class="bg-primary-dark flex flex-row items-center">
           <SubPath @pathClick="onPathClick" />
         </div>
         <p class="text-xl xl:text-3xl pl-6">{{ page }}/{{lastPage}}</p>
@@ -17,7 +16,7 @@
         @sceneClick="onSceneClick"
       />
       <div
-        v-if="isTallEnough"
+        v-if="isMobile"
         v-show="!showPhotoModal && !showLockedModal"
         class="absolute flex flex-row w-full justify-between inset-0 px-4 z-20 h-20 top-1/2"
       >
@@ -29,11 +28,11 @@
         </button>
       </div>
       <div
-        v-else-if="!isTallEnough.value"
+        v-else-if="!isMobile.value"
         v-show="!showPhotoModal && !showLockedModal"
-        class="fixed bottom-0 w-full z-20 pb-4"
+        class="fixed left-0 right-0 bottom-0 w-full z-20 pb-4 flex flex-row justify-center"
       >
-        <AltabButton Type="bibutton" Title="Page précédente" biTitle="Page suivante" Size="small" color="white" :biclick="nextPage" :click="previousPage" />
+        <AltabButton Type="bibutton" Title="Page précédente" biTitle="Page suivante" Size="medium" color="white" :biclick="nextPage" :click="previousPage" />
       </div>
     </div>
 
@@ -53,7 +52,6 @@
 
 <script setup>
 // Get the actual folder (An array[10] of files / subfolders), and provide it to the subcontainer (wich will draw the content)
-const router = useRouter();
 // A file is an object with the following properties:
 // {
 //   title: "File title",
@@ -77,12 +75,12 @@ const props = defineProps({
   },
 });
 const baseURL = "https://api.drive.altab.tech/api";
-const isTallEnough = ref(true)
+const isMobile = inject('isMobile')
 const showPhotoModal = ref(false);
 const showLockedModal = ref(false);
 const photoDisplayed = ref(null);
 const totalFiles = ref(0);
-const lastPage = ref(0);
+const lastPage = ref(1);
 const actualPath = ref([
   {
     name: "Home",
@@ -113,7 +111,7 @@ watch(folderData, (newfolderData) => {
     folderData.value.childs.forEach((element) => {
       element.type = "Folder";
     });
-    lastPage.value = 0;
+    lastPage.value = 1;
     totalFiles.value = folderData.value.childs.length;
   } else {
     folderData.value.images.data.forEach((element) => {
@@ -214,8 +212,6 @@ function fullscreen() {
 }
 
 onMounted(() => {
-  isTallEnough.value = window.innerWidth > 1280 && !((/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ||
-      (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.platform))) ? true:false);;
   document.addEventListener("go-home", (e) => {
     closePhotoModal();
     closeLockedModal();

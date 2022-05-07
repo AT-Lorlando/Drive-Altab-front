@@ -228,13 +228,10 @@ function animate() {
 }
 
 function render() {
-  // renderer.setClearColor( 0xffffff );
-  // renderer.setScissorTest( false );
-  // renderer.clear();
   let t = clock.getElapsedTime();
-  // renderer.setClearColor( 0x000000 );
-  // renderer.setScissorTest( true );
-  if (focusedFile?.value) {
+  const scroll = folderDisplay.scrollTop;
+
+if (focusedFile?.value) {
     const scene = scenes[props.folder.indexOf(focusedFile?.value)];
     const obj = scene.getObjectByName("toRotate");
     obj.rotation.y = ((Math.cos(t / 4 + Math.PI / 2) * Math.PI) / 2) * 0.5;
@@ -244,19 +241,9 @@ function render() {
     const width = rect.right - rect.left;
     const height = rect.bottom - rect.top;
 
-    renderer.setViewport(0, scroll, width, height);
-    renderer.setScissor(0, scroll, width, height);
+    renderer.setViewport(0, 0, width, height);
+    renderer.setScissor(0, 0, width, height);
     renderer.render(scene, cameraGlobal);
-
-    let tempStarsArray = [];
-    STARS.forEach((s) => {
-      s.update();
-      tempStarsArray.push(s.x, s.y, s.z);
-    });
-    starsGeometry.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute(tempStarsArray, 3)
-    );
   } else {
     scenes.forEach((s, index) => {
       const obj = s.getObjectByName("toRotate");
@@ -278,7 +265,6 @@ function render() {
         const camera = s.getObjectByName("camera");
         const rect = s.userData.size;
         // set the viewport
-        const scroll = window.scrollY;
         // console.log(rect.top, scroll);
         const width = rect.right - rect.left;
         const height = rect.bottom - rect.top;
@@ -337,10 +323,11 @@ function draw_Folder() {
 
 // Vue component
 
+const baseURL = "https://api.drive.altab.tech";
 const focusedFile = inject('focusedFile');
 let fileIndex = null;
 let folderDisplay = null; // The element used to display the folder
-const baseURL = "https://api.drive.altab.tech";
+const isMobile = inject('isMobile');
 
 const props = defineProps({
   folder: {
@@ -353,14 +340,8 @@ const emit = defineEmits(['sceneClick'])
 
 function onClick(f, i) {
   emit('sceneClick', i)
-  // Set the focused file to the file that was clicked, if it the same, than close
-  // focusedFile = focusedFile? null : f
-  // document.getElementById("folderDisplay").style.display = "none";
   folderDisplay.style.visibility = "hidden";
-  // const element = f.scene.userData.element
-  // element.parentElement.classList.toggle('hover:cursor-pointer')
   fileIndex = i;
-  // focusedFile = f;
 }
 
 onMounted(() => {
@@ -372,7 +353,6 @@ onMounted(() => {
     document.addEventListener('close-photo-modal', (e) => {
       folderDisplay.style.visibility = "visible"
       fileIndex = null;
-      // focusedFile = null;
   })
 });
 
@@ -384,13 +364,13 @@ onUnmounted(() => {
 <template>
   <ul
     id="folderDisplay"
-    class="grid xl:grid-cols-5 grid-cols-1 w-full overflow-y-auto pt-16 xl:pt-20 px-12 pb-16 xl:pb-0"
+    class="grid xl:grid-cols-5 grid-cols-1 overflow-y-scroll w-full h-screen xl:h-full mt-16 px-12 pb-48 xl:pb-0 bg-primary-dark"
   >
-    <li v-for="(f,index) in props.folder" @click="onClick(f, index)" class="text-white text-xl z-0 hover:cursor-pointer flex flex-col items-center">
-      <h1 class="text-xl">
-        {{f.name || f.title}}
-      </h1>
-      <div :id="`scene${index}`" class="w-80 h-80">
+    <li v-for="(f,index) in props.folder" @click="onClick(f, index)" class="text-white text-xl z-0 hover:cursor-pointer w-full h-auto">
+      <div :id="`scene${index}`" class="flex flex-col items-center w-60 h-60 sm:w-60 sm:h-60 xl:w-80 xl:h-80 2xl:w-100 2xl:h-100">
+        <h1 class="text-xl">
+          {{f.name || f.title}}
+        </h1>
       
       </div>
     </li>

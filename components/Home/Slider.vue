@@ -1,18 +1,15 @@
 <template>
-    <div class="fixed left-0 flex flex-col py-4 justify-arround items-center w-16 h-screen z-40">
-        <div class="flex flex-col space-y-10">
-            <IconsMenu @click="goHome" class="icons" />
-            <!-- <MolleculesInputCommand/> -->
-            <NuxtLink to="/about" class="text-white">
-                <IconsAbout class="icons"/>
-            </NuxtLink>
-            <NuxtLink to="/contact-me" class="text-white">
-                <IconsContact class="icons"/>
-            </NuxtLink>
-            <NuxtLink to="/exemples" class="text-white">
-                <IconsImage class="icons"/>
-            </NuxtLink>
-        </div>
+    <div class="fixed left-0 flex flex-col py-4 justify-arround items-center w-16 h-screen z-40 space-y-10">
+        <IconsMenu @click="goHome" class="icons" />
+        <NuxtLink to="/about" class="text-white">
+            <IconsAbout class="icons"/>
+        </NuxtLink>
+        <NuxtLink to="/contact-me" class="text-white">
+            <IconsContact class="icons"/>
+        </NuxtLink>
+        <NuxtLink to="/exemples" class="text-white">
+            <IconsImage class="icons"/>
+        </NuxtLink>
     </div>
 </template>
 

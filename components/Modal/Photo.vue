@@ -2,7 +2,7 @@
   <div
     class="fixed xl:absolute xl:mt-20 z-20 w-full h-full xl:h-4/6 flex flex-col xl:flex-row text-white justify-between items-center"
   >
-    <div v-if="isTallEnough" class="w-1/3 h-full p-4">
+    <div v-if="isMobile" class="w-1/3 h-full p-4">
       <h1 class="text-3xl">Informations sur la photo</h1>
       <div class="flex flex-col space-y-1 m-4">
         <div v-for="i in informations" class="flex flex-row w-1/2 justify-between">
@@ -20,7 +20,7 @@
         </div>
       </div>
     </div>
-    <div v-if="isTallEnough" class="flex flex-row w-1/3 justify-between px-4 h-full">
+    <div v-if="isMobile" class="flex flex-row w-1/3 justify-between px-4 h-full">
       <button class="bg-transparent" @click="previous">
         <IconsLeftArrow class="icons" />
       </button>
@@ -32,7 +32,7 @@
         <IconsRightArrow class="icons" />
       </button>
     </div>
-    <div v-if="isTallEnough" class="w-1/3 h-auto px-4 pl-20 space-y-8 my-auto flex flex-col">
+    <div v-if="isMobile" class="w-1/3 h-auto px-4 pl-20 space-y-8 my-auto flex flex-col">
       <AltabButton :click="download" Title="Télécharger" Color="black" Size="large" />
       <AltabButton
         Type="link"
@@ -60,7 +60,7 @@
         biTitle="Page suivante"
       />
     </div>
-    <div v-else class="fixed left-0 bottom-0 w-full h-auto flex flex-col space-y-4 mb-2 text-sm">
+    <div v-else class="fixed left-0 bottom-0 w-full h-auto flex flex-col space-y-2 mb-2 text-sm">
       <AltabButton
         Type="bibutton"
         :click="previous"
@@ -79,7 +79,7 @@
         Size="medium"
         biTitle="Fermer"
       />
-      <AltabButton class="w-80" Type="link" Route="/exemples" Title="Voir des exemples de retouches" Color="black" Size="medium" />
+      <AltabButton Type="link" Route="/exemples" Title="Voir des exemples de retouches" Color="black" Size="medium" />
       <AltabButton
         Type="bilink"
         :Route="`/contact-help${photo.id}`"
@@ -181,11 +181,9 @@ function setPhoto(photo) {
   ];
   fullsize.value = `${baseURL}${photo.data.url}`
 }
-const isTallEnough = ref(true)
+const isMobile = inject("isMobile");
 
 onMounted(() => {
-  isTallEnough.value = window.innerWidth > 1280 && !((/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ||
-      (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.platform))) ? true:false);;
   setPhoto(photo.value);
 });
 </script>

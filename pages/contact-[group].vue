@@ -1,5 +1,5 @@
 <template>
-  <KinesisContainer class="w-full h-screen z-20 overflow-clip bg-primary-dark xl:pl-0 pl-8">
+  <KinesisContainer class="h-full z-20 overflow-clip bg-primary-dark xl:pl-0 pl-8 xl:mt-20">
     <KinesisElement
       class="flex flex-col items-center pl-8 xl:pl-0 xl:w-3/5 h-full m-auto text-white"
       :strength="4"
@@ -12,10 +12,11 @@
         <h3 class="text-xl uppercase">Contact</h3>
       </div>
       <p>[ 🇫🇷 | 🇺🇸 | 🇪🇸 ]</p>
+      <p class="text-red-500">Le formulaire ne fonctionne pas encore...</p>
       <p v-show="error" class="text-red-400">{{ error }}</p>
       <p v-show="confirm" class="text-teal-500">{{ confirm }}</p>
       <form
-        class="w-full mt-4 grid gap-6 font-text text-lg"
+        class="w-4/5 mt-4 flex flex-col space-y-6 font-text text-lg justify-center items-center"
         name="contactDrive"
         id="contactForm"
         netlify
@@ -44,11 +45,11 @@
           <textarea v-model="message" :rows="rows" class="formInput" type="text" name="message" placeholder="Votre message"/>
         </div>
 
-        <div class="flex flex-col xl:flex-row justify-between">
+        <div class="flex flex-col xl:flex-row justify-between space-y-4 xl:space-y-0">
           <p class="underline cursor-pointer self-center" @click="openMailto">
             contact@altab.tech
           </p>
-          <AltabButton type="submit" Title="Envoyer" Color="black" Size="medium" />
+          <AltabButton class="hover: cursor-not-allowed" type="submit" Title="Envoyer" Color="black" Size="medium" />
         </div>
       </form>
     </KinesisElement>
@@ -128,7 +129,7 @@ onMounted(() => {
     mailObject.value = preMailObject;
   }
 
-  document.getElementById("contactForm").addEventListener("submit", handleSubmit(e));
+  document.getElementById("contactForm").addEventListener("submit", handleSubmit);
 });
 </script>
 

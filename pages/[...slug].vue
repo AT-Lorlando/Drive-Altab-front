@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full w-full">
+  <div>
   <div v-if="pending" class="text-white">
       Loading ...
     </div>

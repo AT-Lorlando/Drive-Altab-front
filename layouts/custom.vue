@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="h-screen w-full bg-primary-dark overflow-y-clip">
     <canvas
           id="threecanvas"
-          class="fixed w-full h-full inset-0 z-0"
+          class="absolute w-full h-full inset-0 z-0"
         >
     </canvas>
-    <div class="flex flex-col">
-      <HomeHeader v-if="isTallEnough"/>
+    <div class="h-full w-full flex flex-col">
+      <HomeHeader v-if="isMobile"/>
       <HomeSlider v-else/>
       <slot />
     </div>
@@ -14,10 +14,11 @@
 </template>
 
 <script setup>
-const isTallEnough = ref(true)
+const isMobile = ref(true)
+provide('isMobile', isMobile)
 
 onMounted(() => {
-      isTallEnough.value = window.innerWidth > 1280 && !((/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ||
+      isMobile.value = window.innerWidth > 1280 && !((/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ||
       (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.platform))) ? true:false);;
 })
 </script>

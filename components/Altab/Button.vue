@@ -126,13 +126,13 @@ export default {
       }
       if (this.Color == "black") {
           add_class+=
-            "w-80 bg-primary-dark hover:bg-white text-white hover:text-black border hover:border-primary-dark hover:scale-105 "
+            "bg-primary-dark hover:bg-white text-white hover:text-black border hover:border-primary-dark hover:scale-105 "
       } else if (this.Color == "transparent") {
           add_class+=
-            "w-80 bg-transparent hover:bg-primary-dark hover:text-white border border-primary-dark hover:border-white hover:scale-105 "
+            "bg-transparent hover:bg-primary-dark hover:text-white border border-primary-dark hover:border-white hover:scale-105 "
       } else if (this.Color == "white") {
           add_class+=
-            "w-80 text-white bg-transparent hover:bg-white hover:text-black border border-primary-dark hover:border-white hover:scale-105 "
+            "text-white bg-transparent hover:bg-white hover:text-black border border-primary-dark hover:border-white hover:scale-105 "
       }
     }
     return {

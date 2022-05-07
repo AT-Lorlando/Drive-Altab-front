@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full h-full bg-primary-dark flex flex-col justify-center text-white text-base xl:text-xl z-20">
+    <div class="bg-primary-dark flex flex-col justify-center text-white text-base xl:text-xl z-20 xl:mt-20">
         <div class="xl:pl-0 pl-8 w-4/5 xl:w-2/5 self-center justify-center items-center flex flex-col text-center">
             <h2>
             Qu'est-ce qu'Altab ?
