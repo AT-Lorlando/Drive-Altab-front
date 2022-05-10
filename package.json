@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "nuxi dev",
-    "build": "nuxi generate",
+    "build": "nuxi build",
     "start": "node .output/server/index.mjs"
   },
   "devDependencies": {
@@ -15,5 +15,8 @@
     "axios": "^0.26.1",
     "three": "^0.139.2",
     "vue-kinesis": "^2.0.5"
+  },
+  "engines": {
+    "node": "16.x"
   }
 }
