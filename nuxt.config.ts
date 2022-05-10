@@ -22,4 +22,7 @@ export default defineNuxtConfig({
     link: [{ rel: "icon", type: "png", href: "/icon.png" }],
   },
   loading: { color: "#3B8070" },
+  nitro: {
+    preset: 'node-server'
+  }
 });
