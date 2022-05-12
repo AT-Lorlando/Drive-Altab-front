@@ -18,68 +18,6 @@ const POS = [
 ];
 let geometryCube, geometryPlane, texture, material;
 
-// Stars parameters
-const amount = 250;
-const STARS = [];
-const galaxyGeometryVertices = [];
-const galaxyGeometryColors = [];
-const galaxyGeometrySizes = [];
-const starsGeometry = new THREE.BufferGeometry();
-const hue = 215 / 360;
-let INITIAL_POS = -1;
-// let POS_MAX = INITIAL_POS
-let POS_MAX = 1;
-let StarsMaterial, galaxyPoints, pixelRatio;
-const galaxyColors = [
-  new THREE.Color().setHSL(hue, 1, 0.99),
-  new THREE.Color().setHSL(hue, 1, 0.95),
-  new THREE.Color().setHSL(hue, 1, 0.8),
-  new THREE.Color().setHSL(hue, 1, 0.7),
-  new THREE.Color().setHSL(hue, 1, 0.6),
-];
-
-const vertexshader = `
-attribute float size;
-attribute vec3 color;
-attribute float fade;
-
-varying vec3 vColor;
-
-void main() {
-    vColor = color;
-    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-    gl_PointSize = size * 20.0/-mvPosition.z;
-    gl_Position = projectionMatrix * mvPosition;
-}`;
-
-const fragmentshader = `
-uniform sampler2D pointTexture;
-varying vec3 vColor;
-void main() {
-    gl_FragColor = vec4(vColor, 1.0);
-    gl_FragColor = gl_FragColor * texture2D(pointTexture, gl_PointCoord);
-}`;
-
-class Star {
-  setup(color) {
-    this.y = -1.25 + (Math.random() - 0.5) / 6;
-    this.x = INITIAL_POS + Math.abs(this.y / -1.25 - 1);
-    this.z = -1;
-    (this.v = (Math.random() / 0.5) * 0.1 + 0.01), (this.initial_x = this.x);
-    this.max_x = POS_MAX - Math.abs(this.y / -1.25 - 1);
-
-    this.size = Math.random() * 0.01 + 0.5 * pixelRatio;
-    this.color = color;
-  }
-  update() {
-    this.x += this.v / 5;
-    if (this.x > this.max_x) {
-      this.x = this.initial_x;
-      //   this.x -= 2;
-    }
-  }
-}
-
 function init() {
   canvas = document.getElementById(`threecanvas`);
   size = canvas.getBoundingClientRect();
@@ -90,52 +28,15 @@ function init() {
   renderer.setScissorTest(true);
   renderer.setSize(size.width, size.height);
 
-  pixelRatio = renderer.getPixelRatio();
 
   cameraGlobal = new THREE.PerspectiveCamera(75, size.width / size.height, 0.1, 1000);
   cameraGlobal.position.z = isMobile.value ? 2.5 : 4;
-
-  StarsMaterial = new THREE.ShaderMaterial({
-    uniforms: {
-      pointTexture: {
-        value: new THREE.TextureLoader().load("../../assets/imgs/dotTexture.png"),
-      },
-    },
-    vertexShader: vertexshader,
-    fragmentShader: fragmentshader,
-    blending: THREE.AdditiveBlending,
-    alphaTest: 1.0,
-    transparent: true,
-  });
+  
 
   geometryCube = new THREE.PlaneGeometry(1, 1);
   geometryPlane = new THREE.PlaneGeometry(1.6, 1.6);
   texture = new THREE.TextureLoader().load(img);
   material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
-
-  for (let i = 0; i < amount; i++) {
-    let star = new Star();
-    star.setup(galaxyColors[Math.floor(Math.random() * galaxyColors.length)]);
-    galaxyGeometryVertices.push(star.x, star.y, star.z);
-    galaxyGeometryColors.push(star.color.r, star.color.g, star.color.b);
-    galaxyGeometrySizes.push(star.size);
-    STARS.push(star);
-  }
-
-  starsGeometry.setAttribute(
-    "size",
-    new THREE.Float32BufferAttribute(galaxyGeometrySizes, 1)
-  );
-  starsGeometry.setAttribute(
-    "color",
-    new THREE.Float32BufferAttribute(galaxyGeometryColors, 3)
-  );
-  starsGeometry.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(galaxyGeometryVertices, 3)
-  );
-
-  galaxyPoints = new THREE.Points(starsGeometry, StarsMaterial);
 
   const camera = new THREE.PerspectiveCamera(50, 1, 1, 10);
   camera.position.z = 2.5;
@@ -185,6 +86,7 @@ function folderMesh(f) {
     const cube = new THREE.Group();
     for (let i = 0; i < 6; i++) {
       let j = i % f.cover.length
+      console.log(f.cover[j].data)
       const new_texture = new THREE.TextureLoader().load(`${baseURL}${f.cover[j].data.breakpoints.small.url}`,fixTexture(1, 1));
       new_texture.wrapS = THREE.ClampToEdgeWrapping;
       new_texture.wrapT = THREE.RepeatWrapping;

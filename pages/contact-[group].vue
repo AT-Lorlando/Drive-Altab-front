@@ -20,6 +20,7 @@
         name="contactDrive"
         id="contactForm"
         method="post"
+        @submit.prevent="sendForm"
       >
         <p class="hidden">
           <label>Don't fill this out if you're human: <input name="bot-field" /></label>
@@ -67,11 +68,10 @@ const name = ref("")
 const mailObject = ref("")
 const message = ref("")
 let preMailObject = ""
-// const baseURL = "https://api.drive.altab.tech/api";
-const baseURL = "http://localhost:9159/api";
+const baseURL = "https://api.drive.altab.tech/api";
 
 
-function handleSubmit() {
+function sendForm() {
   if (email.value == "" || name.value == "" || mailObject.value == "" || message.value == "") {
     error.value = "Invalid input. Please verify any informations provided.";
   } else {
