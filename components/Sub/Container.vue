@@ -86,7 +86,9 @@ function folderMesh(f) {
     const cube = new THREE.Group();
     for (let i = 0; i < 6; i++) {
       let j = i % f.cover.length
+      console.log(j)
       console.log(f.cover[j].data)
+      console.log(f.cover[j].data.breakpoints.small.url)
       const new_texture = new THREE.TextureLoader().load(`${baseURL}${f.cover[j].data.breakpoints.small.url}`,fixTexture(1, 1));
       new_texture.wrapS = THREE.ClampToEdgeWrapping;
       new_texture.wrapT = THREE.RepeatWrapping;
