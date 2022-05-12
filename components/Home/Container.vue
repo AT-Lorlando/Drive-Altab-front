@@ -107,6 +107,7 @@ const { pending, data: folderData, refresh, error } = useLazyAsyncData("folderDa
 
 // Watch on folderData, to add the type on each element and update the path
 watch(folderData, (newfolderData) => {
+  console.log(newfolderData);
   if (newfolderData.childs.length > 0) {
     folderData.value.childs.forEach((element) => {
       element.type = "Folder";
