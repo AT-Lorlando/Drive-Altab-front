@@ -93,7 +93,7 @@ function init() {
   pixelRatio = renderer.getPixelRatio();
 
   cameraGlobal = new THREE.PerspectiveCamera(75, size.width / size.height, 0.1, 1000);
-  cameraGlobal.position.z = 2.5;
+  cameraGlobal.position.z = isMobile.value ? 2.5 : 4;
 
   StarsMaterial = new THREE.ShaderMaterial({
     uniforms: {
@@ -253,12 +253,12 @@ if (focusedFile?.value) {
           obj.rotation.y =
             ((Math.cos(t / 4 + Math.PI / 2 + ((index / 4) * Math.PI) / 2) * Math.PI) /
               2) *
-            0.75;
+            0.5 * coef;
         } else if (obj.type === "Mesh") {
           obj.rotation.y =
             ((Math.cos(t / 4 + Math.PI / 2 + ((index / 4) * Math.PI) / 2) * Math.PI) /
               2) *
-            0.5;
+            1 * coef;
         }
         // s.children[0].rotation.y = Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
         // s.children[0].rotation.y = -Math.cos(t) * Math.PI/2 * 0.75;
@@ -328,7 +328,7 @@ const focusedFile = inject('focusedFile');
 let fileIndex = null;
 let folderDisplay = null; // The element used to display the folder
 const isMobile = inject('isMobile');
-
+let coef = 1
 const props = defineProps({
   folder: {
     type: Array,
@@ -347,6 +347,9 @@ function onClick(f, i) {
 onMounted(() => {
     canvas = document.getElementById(`threecanvas`);
     folderDisplay = document.getElementById("folderDisplay");
+    if(!isMobile.value) {
+      coef = 0.5
+    }
     init();
     animate();
     draw_Folder();
@@ -364,7 +367,7 @@ onUnmounted(() => {
 <template>
   <ul
     id="folderDisplay"
-    class="grid xl:grid-cols-5 grid-cols-1 overflow-y-scroll w-full h-screen xl:h-full mt-16 px-12 pb-48 xl:pb-0 bg-primary-dark"
+    class="grid xl:grid-cols-5 xl:pt-8 grid-cols-1 overflow-y-auto w-full h-screen xl:h-full mt-16 px-12 pb-48 xl:pb-0 bg-primary-dark"
   >
     <li v-for="(f,index) in props.folder" @click="onClick(f, index)" class="text-white text-xl z-0 hover:cursor-pointer w-full h-auto">
       <div :id="`scene${index}`" class="flex flex-col items-center w-60 h-60 sm:w-60 sm:h-60 xl:w-80 xl:h-80 2xl:w-100 2xl:h-100">
