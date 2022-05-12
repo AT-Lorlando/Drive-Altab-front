@@ -19,11 +19,8 @@
         class="w-4/5 mt-4 flex flex-col space-y-6 font-text text-lg justify-center items-center"
         name="contactDrive"
         id="contactForm"
-        netlify
         method="post"
-        data-netlify-honeypot="bot-field"
       >
-        <input type="hidden" name="form-name" value="contactDrive" />
         <p class="hidden">
           <label>Don't fill this out if you're human: <input name="bot-field" /></label>
         </p>
@@ -70,40 +67,36 @@ const name = ref("")
 const mailObject = ref("")
 const message = ref("")
 let preMailObject = ""
+// const baseURL = "https://api.drive.altab.tech/api";
+const baseURL = "http://localhost:9159/api";
 
-function encode(data) {
-  return Object.keys(data)
-    .map(
-      (key) =>
-        encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
-    )
-    .join("&");
-}
 
-function handleSubmit(e) {
-  e.preventDefault();
+function handleSubmit() {
   if (email.value == "" || name.value == "" || mailObject.value == "" || message.value == "") {
     error.value = "Invalid input. Please verify any informations provided.";
   } else {
-    axios.post("/", encode({
-        "form-name": e.target.getAttribute("name"),
-        ...name,
-        ...email,
-        ...mailObject,
-        ...message,
-      }),
-  {header: { "Content-Type": "application/x-www-form-urlencoded",
-              "Accept": "application/json" }})
-      .then((res) => {
-        if (res.status === 200) {
-          error.value = "An error occured. Please try again later.";
-
-          // confirm.value = "Your message has been sent. Thank you!";
-        } else {
-          error.value = "An error occured. Please try again later.";
-        }
-      })
-      .catch(() => (error.value = "An error occured !"));
+    // Post the from data to the API
+    axios.post(`${baseURL}/mail`, {
+      from: email.value + " <" + name.value + ">",
+      object: mailObject.value,
+      value: message.value,
+      img_id: id.value
+    })
+    .then(function (response) {
+      if (response.data.status == "success") {
+        confirm.value = "Your message has been sent.";
+        email.value = "";
+        name.value = "";
+        mailObject.value = "";
+        message.value = "";
+        objectInput.value.focus();
+      } else {
+        error.value = "An error occured. Please try again later.";
+      }
+    })
+    .catch(function (error) {
+      error.value = "An error occured. Please try again later.";
+    });
   }
 }
 
@@ -128,8 +121,6 @@ onMounted(() => {
     preMailObject = "[photo " + id.value+ "]" + " Demande d'aide";
     mailObject.value = preMailObject;
   }
-
-  document.getElementById("contactForm").addEventListener("submit", handleSubmit);
 });
 </script>
 
