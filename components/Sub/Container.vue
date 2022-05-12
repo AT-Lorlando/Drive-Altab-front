@@ -110,6 +110,7 @@ function folderMesh(f) {
     return cube;
   } else {
     // Add a plane facing the camera
+    console.log('Image', f)
     const new_texture = new THREE.TextureLoader().load(`${baseURL}${f.data.breakpoints.small.url}`,fixTexture(1, 1));
     new_texture.wrapS = THREE.ClampToEdgeWrapping;
     new_texture.wrapT = THREE.RepeatWrapping;
