@@ -15,7 +15,7 @@
       <p v-show="error" class="text-red-400 pt-2">{{ error }}</p>
       <p v-show="confirm" class="text-teal-500 pt-2">{{ confirm }}</p>
       <form
-        class="w-4/5 mt-4 flex flex-col space-y-6 font-text text-lg justify-center items-center"
+        class="w-3/5 xl:w-4/5 mt-4 flex flex-col space-y-6 font-text text-lg justify-center items-center"
         name="contactDrive"
         id="contactForm"
         method="post"
@@ -46,7 +46,7 @@
           <p class="underline cursor-pointer self-center" @click="openMailto">
             contact@altab.tech
           </p>
-          <AltabButton class="hover: cursor-not-allowed" type="submit" Title="Envoyer" Color="black" Size="medium" />
+          <AltabButton type="submit" Title="Envoyer" Color="black" Size="medium" />
         </div>
       </form>
     </KinesisElement>
@@ -144,7 +144,7 @@ onMounted(() => {
 }
 
 .containerInput {
-  @apply flex flex-row rounded-md border-2 border-white pl-2 pb-1 pt-2 xl:w-full w-80
+  @apply flex flex-row rounded-md border-2 border-white pl-2 pb-1 pt-1 sm:pt-2 sm:w-full w-52 text-sm sm:text-lg
 }
 
 </style>
