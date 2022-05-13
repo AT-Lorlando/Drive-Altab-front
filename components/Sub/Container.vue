@@ -3,6 +3,7 @@ import * as THREE from "three";
 import img from "../../assets/imgs/img.png";
 let renderer, controls, size, clock, cameraGlobal;
 let canvas, ID 
+let scroll = 0
 const scenes = [];
 const defaultScene = new THREE.Scene();
 const mouse = new THREE.Vector2();
@@ -60,7 +61,7 @@ function onWindowResize() {
 
 function onMouseMove(event, size, camera) {
   mouse.x = (event.clientX - size.x) / size.width - 0.5;
-  mouse.y = (event.clientY - size.y) / size.height - 0.5;
+  mouse.y = (event.clientY + scroll - size.y) / size.height - 0.5;
 
   camera.position.x += (mouse.x * 2 - camera.position.x) * 0.05;
   camera.position.y += (-mouse.y * 2 - camera.position.y) * 0.05;
@@ -134,7 +135,7 @@ function animate() {
 
 function render() {
   let t = clock.getElapsedTime();
-  const scroll = folderDisplay.scrollTop;
+  scroll = folderDisplay.scrollTop;
 
 if (focusedFile?.value) {
     const scene = scenes[props.folder.indexOf(focusedFile?.value)];
