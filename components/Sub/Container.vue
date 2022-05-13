@@ -87,9 +87,6 @@ function folderMesh(f) {
     const cube = new THREE.Group();
     for (let i = 0; i < 6; i++) {
       let j = i % f.cover.length
-      console.log(j)
-      console.log(f.cover[j].data)
-      console.log(f.cover[j].data.breakpoints.small.url)
       const new_texture = new THREE.TextureLoader().load(`${baseURL}${f.cover[j].data.breakpoints.small.url}`,fixTexture(1, 1));
       new_texture.wrapS = THREE.ClampToEdgeWrapping;
       new_texture.wrapT = THREE.RepeatWrapping;
@@ -111,7 +108,6 @@ function folderMesh(f) {
     return cube;
   } else {
     // Add a plane facing the camera
-    console.log('Image', f)
     const new_texture = new THREE.TextureLoader().load(`${baseURL}${f.data.breakpoints.small.url}`,fixTexture(1, 1));
     new_texture.wrapS = THREE.ClampToEdgeWrapping;
     new_texture.wrapT = THREE.RepeatWrapping;
@@ -171,7 +167,6 @@ if (focusedFile?.value) {
         const camera = s.getObjectByName("camera");
         const rect = s.userData.size;
         // set the viewport
-        // console.log(rect.top, scroll);
         const width = rect.right - rect.left;
         const height = rect.bottom - rect.top;
         const left = rect.left;
@@ -254,7 +249,6 @@ function onClick(f, i) {
 }
 
 onMounted(() => {
-    console.log("Sub container mounted")
     canvas = document.getElementById(`threecanvas`);
     folderDisplay = document.getElementById("folderDisplay");
     if(!isMobile.value) {

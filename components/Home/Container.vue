@@ -220,8 +220,6 @@ onMounted(() => {
     folderID.value = 1;
     // refresh()
   });
-  console.log("Main container mounted")
-  console.log(folderData)
 });
 </script>
 
