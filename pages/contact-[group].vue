@@ -12,9 +12,8 @@
         <h3 class="text-xl uppercase">Contact</h3>
       </div>
       <p>[ 🇫🇷 | 🇺🇸 | 🇪🇸 ]</p>
-      <p class="text-red-500">Le formulaire ne fonctionne pas encore...</p>
-      <p v-show="error" class="text-red-400">{{ error }}</p>
-      <p v-show="confirm" class="text-teal-500">{{ confirm }}</p>
+      <p v-show="error" class="text-red-400 pt-2">{{ error }}</p>
+      <p v-show="confirm" class="text-teal-500 pt-2">{{ confirm }}</p>
       <form
         class="w-4/5 mt-4 flex flex-col space-y-6 font-text text-lg justify-center items-center"
         name="contactDrive"
@@ -73,8 +72,13 @@ const baseURL = "https://api.drive.altab.tech/api";
 
 function sendForm() {
   if (email.value == "" || name.value == "" || mailObject.value == "" || message.value == "") {
-    error.value = "Invalid input. Please verify any informations provided.";
+      setError("Invalid input. Please verify any informations provided.");
   } else {
+    // If the email value match a email pattern
+    if (!email.value.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,10})+$/)) {
+      setError("Invalid email. Please verify your email.");
+      return
+    }
     // Post the from data to the API
     axios.post(`${baseURL}/mail`, {
       from: email.value + " <" + name.value + ">",
@@ -82,22 +86,32 @@ function sendForm() {
       value: message.value,
       img_id: id.value
     })
-    .then(function (response) {
-      if (response.data.status == "success") {
-        confirm.value = "Your message has been sent.";
+    .then((response) => {
+      if (response.status == 200) {
+        setConfirm("Your message has been sent")
         email.value = "";
         name.value = "";
         mailObject.value = "";
         message.value = "";
         objectInput.value.focus();
       } else {
-        error.value = "An error occured. Please try again later.";
+        setError("An error occured. Please try again later.");
       }
     })
-    .catch(function (error) {
-      error.value = "An error occured. Please try again later.";
+    .catch((e) => {
+        setError(e.message);
     });
   }
+}
+
+function setError (s) {
+  confirm.value = ""
+  error.value = s
+}
+
+function setConfirm(s) {
+  confirm.value = s
+  error.value = ""
 }
 
 function openMailto() {

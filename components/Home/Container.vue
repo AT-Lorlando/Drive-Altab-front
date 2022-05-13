@@ -102,12 +102,12 @@ const { pending, data: folderData, refresh, error } = useLazyAsyncData("folderDa
     params: {
       page: page.value,
     },
-  })
+  }).then(
+  )
 );
 
 // Watch on folderData, to add the type on each element and update the path
 watch(folderData, (newfolderData) => {
-  console.log(newfolderData);
   if (newfolderData.childs.length > 0) {
     folderData.value.childs.forEach((element) => {
       element.type = "Folder";
@@ -220,6 +220,8 @@ onMounted(() => {
     folderID.value = 1;
     // refresh()
   });
+  console.log("Main container mounted")
+  console.log(folderData)
 });
 </script>
 

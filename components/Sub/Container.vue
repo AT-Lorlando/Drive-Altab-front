@@ -187,6 +187,11 @@ if (focusedFile?.value) {
 
 function draw_Folder() {
   props.folder.forEach((f, index) => {
+    if(f.cover) {
+      f.type = "Folder"
+    } else {
+      f.type = "Image"
+    }
     let scene;
     if (scenes[index]) {
       scene = scenes[index];
@@ -196,7 +201,7 @@ function draw_Folder() {
       const sceneElement = document.getElementById(`scene${index}`);
       scene.userData.element = sceneElement;
       const sceneSize = scene.userData.size;
-        sceneElement?.parentElement.addEventListener("mousemove", () => {
+        sceneElement?.addEventListener("mousemove", () => {
           !focusedFile.value
             ? onMouseMove(event, sceneSize, scene.getObjectByName("camera"))
             : "";
@@ -211,7 +216,7 @@ function draw_Folder() {
       const sceneSize = sceneElement.getBoundingClientRect();
       scene.userData.element = sceneElement;
       scene.userData.size = sceneSize;
-      sceneElement.parentElement.addEventListener("mousemove", () => {
+      sceneElement.addEventListener("mousemove", () => {
         !focusedFile.value
           ? onMouseMove(event, sceneSize, scene.getObjectByName("camera"))
           : "";
@@ -220,9 +225,7 @@ function draw_Folder() {
       scenes.push(scene);
     }
     f.scene = scene;
-    if (f.type != "fill") {
-      scene.add(folderMesh(f));
-    }
+    scene.add(folderMesh(f));
   });
 }
 
@@ -250,6 +253,7 @@ function onClick(f, i) {
 }
 
 onMounted(() => {
+    console.log("Sub container mounted")
     canvas = document.getElementById(`threecanvas`);
     folderDisplay = document.getElementById("folderDisplay");
     if(!isMobile.value) {
