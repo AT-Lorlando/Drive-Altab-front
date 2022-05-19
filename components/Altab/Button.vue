@@ -89,7 +89,7 @@ export default {
       if (this.Type == 'bibutton' || this.Type == 'bilink') {
         add_class += "w-15 "
       } else {
-        add_class += "w-30 "
+        add_class += "w-32 "
       }
       if (this.Color == "black") {
           add_class+=

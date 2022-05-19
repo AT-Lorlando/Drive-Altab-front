@@ -1,6 +1,6 @@
 <template>
-    <div class="bg-primary-dark flex flex-col justify-center text-white text-base xl:text-xl z-20 xl:mt-20 h-full">
-        <div class="xl:pl-0 pl-8 w-4/5 xl:w-2/5 self-center justify-center items-center flex flex-col text-center">
+    <div class="bg-primary-dark flex flex-col justify-center text-white text-base xl:text-xl z-20 xl:mt-20 h-screen">
+        <div class="xl:pl-0 pl-8 w-4/5 xl:w-2/5 self-center flex flex-col items-center text-center overflow-y-auto h-screen">
             <h2>
             Qu'est-ce qu'Altab ?
             </h2>
@@ -22,7 +22,6 @@
             <p>
             Si vous ne voulez pas apparaître ici, vous pouvez me contacter afin de supprimer au plus vite les photos concernées. Votre droit à l'image s'applique, tout en sachant que photographier une foule est possible mais les individus ne doivent pas être pris en gros plan.
             </p>
-        
         </div>
     </div>
 </template>
