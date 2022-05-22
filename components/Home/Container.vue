@@ -216,9 +216,9 @@ onMounted(() => {
   document.addEventListener("go-home", (e) => {
     closePhotoModal();
     closeLockedModal();
+    refresh()
     document.dispatchEvent(new Event("close-photo-modal"));
     folderID.value = 1;
-    // refresh()
   });
 });
 </script>

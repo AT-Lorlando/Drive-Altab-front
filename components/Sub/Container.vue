@@ -131,57 +131,60 @@ function animate() {
 
 function render() {
   let t = clock.getElapsedTime();
-  scroll = folderDisplay.scrollTop;
+  scroll = folderDisplay ? folderDisplay.scrollTop : 0;
 
-if (focusedFile?.value) {
-    const scene = scenes[props.folder.indexOf(focusedFile?.value)];
-    const obj = scene.getObjectByName("toRotate");
-    obj.rotation.y = ((Math.cos(t / 4 + Math.PI / 2) * Math.PI) / 2) * 0.5;
+  if (focusedFile?.value) {
+      const scene = scenes[props.folder.indexOf(focusedFile?.value)];
+      const obj = scene.getObjectByName("toRotate");
+      obj.rotation.y = ((Math.cos(t / 4 + Math.PI / 2) * Math.PI) / 2) * 0.5;
 
-    const rect = renderer.domElement.getBoundingClientRect();
+      const rect = renderer.domElement.getBoundingClientRect();
 
-    const width = rect.right - rect.left;
-    const height = rect.bottom - rect.top;
+      const width = rect.right - rect.left;
+      const height = rect.bottom - rect.top;
 
-    renderer.setViewport(0, 0, width, height);
-    renderer.setScissor(0, 0, width, height);
-    renderer.render(scene, cameraGlobal);
-  } else {
-    scenes.forEach((s, index) => {
-      const obj = s.getObjectByName("toRotate");
-      if (obj) {
-        // If obj is a group or a mesh
-        if (obj.type === "Group") {
-          obj.rotation.y =
-            ((Math.cos(t / 4 + Math.PI / 2 + ((index / 4) * Math.PI) / 2) * Math.PI) /
-              2) *
-            0.5 * coef;
-        } else if (obj.type === "Mesh") {
-          obj.rotation.y =
-            ((Math.cos(t / 4 + Math.PI / 2 + ((index / 4) * Math.PI) / 2) * Math.PI / 2) /
-              2) *
-            1 *  coef;
+      renderer.setViewport(0, 0, width, height);
+      renderer.setScissor(0, 0, width, height);
+      renderer.render(scene, cameraGlobal);
+    } else {
+      scenes.forEach((s, index) => {
+        const obj = s.getObjectByName("toRotate");
+        if (obj) {
+          // If obj is a group or a mesh
+          if (obj.type === "Group") {
+            obj.rotation.y =
+              ((Math.cos(t / 4 + Math.PI / 2 + ((index / 4) * Math.PI) / 2) * Math.PI) /
+                2) *
+              0.5 * coef;
+          } else if (obj.type === "Mesh") {
+            obj.rotation.y =
+              ((Math.cos(t / 4 + Math.PI / 2 + ((index / 4) * Math.PI) / 2) * Math.PI / 2) /
+                2) *
+              1 *  coef;
+          }
+          // s.children[0].rotation.y = Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
+          // s.children[0].rotation.y = -Math.cos(t) * Math.PI/2 * 0.75;
+          const camera = s.getObjectByName("camera");
+          const rect = s.userData.size;
+          // set the viewport
+          const width = rect.right - rect.left;
+          const height = rect.bottom - rect.top;
+          const left = rect.left;
+          const bottom = renderer.domElement.clientHeight - rect.bottom + scroll;
+          renderer.setViewport(left, bottom, width, height);
+          renderer.setScissor(left, bottom, width, height);
+          // camera.position.y = Math.cos( t + index ) *0.8  ;
+          camera.lookAt(0, 0, 0);
+          renderer.render(s, camera);
         }
-        // s.children[0].rotation.y = Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
-        // s.children[0].rotation.y = -Math.cos(t) * Math.PI/2 * 0.75;
-        const camera = s.getObjectByName("camera");
-        const rect = s.userData.size;
-        // set the viewport
-        const width = rect.right - rect.left;
-        const height = rect.bottom - rect.top;
-        const left = rect.left;
-        const bottom = renderer.domElement.clientHeight - rect.bottom + scroll;
-        renderer.setViewport(left, bottom, width, height);
-        renderer.setScissor(left, bottom, width, height);
-        // camera.position.y = Math.cos( t + index ) *0.8  ;
-        camera.lookAt(0, 0, 0);
-        renderer.render(s, camera);
-      }
-    });
+      });
   }
 }
 
 function draw_Folder() {
+  if(!folderDisplay) {
+    return
+  }
   props.folder.forEach((f, index) => {
     if(f.cover) {
       f.type = "Folder"
@@ -254,9 +257,18 @@ onMounted(() => {
     if(!isMobile.value) {
       coef = 0.5
     }
-    init();
-    animate();
-    draw_Folder();
+    if(!folderDisplay) {
+      setTimeout(() => {
+        folderDisplay = document.getElementById("folderDisplay");
+        init();
+        animate();
+        draw_Folder();
+      }, 1000)
+    } else {
+      init();
+      animate();
+      draw_Folder();
+    }
     document.addEventListener('close-photo-modal', (e) => {
       folderDisplay.style.visibility = "visible"
       fileIndex = null;

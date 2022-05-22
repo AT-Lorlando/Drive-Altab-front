@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col space-y-4 w-full h-full items-center z-20">
+    <div class="flex flex-col space-y-4 w-full h-screen bg-primary-dark items-center z-20">
         <h1 class="text-white text-xl mt-20">
             Désolé, cette page n'existe pas.
         </h1>
