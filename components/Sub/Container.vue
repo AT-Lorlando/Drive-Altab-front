@@ -158,9 +158,9 @@ if (focusedFile?.value) {
             0.5 * coef;
         } else if (obj.type === "Mesh") {
           obj.rotation.y =
-            ((Math.cos(t / 4 + Math.PI / 2 + ((index / 4) * Math.PI) / 2) * Math.PI) /
+            ((Math.cos(t / 4 + Math.PI / 2 + ((index / 4) * Math.PI) / 2) * Math.PI / 2) /
               2) *
-            1 * coef;
+            1 *  coef;
         }
         // s.children[0].rotation.y = Math.cos(t/4+Math.PI/2+(index/4)*Math.PI/2) * Math.PI/2 * 0.75;
         // s.children[0].rotation.y = -Math.cos(t) * Math.PI/2 * 0.75;
