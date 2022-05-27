@@ -137,7 +137,7 @@ function render() {
   if (focusedFile?.value) {
       const scene = scenes[props.folder.indexOf(focusedFile?.value)];
       const obj = scene.getObjectByName("toRotate");
-      obj.rotation.y = ((Math.cos(t / 4 + Math.PI / 2) * Math.PI) / 2) * 0.5;
+      // obj.rotation.y = ((Math.cos(t / 4 + Math.PI / 2) * Math.PI) / 2) * 0.5;
 
       const rect = renderer.domElement.getBoundingClientRect();
 
