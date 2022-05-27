@@ -4,6 +4,7 @@ import img from "../../assets/imgs/img.png";
 let renderer, controls, size, clock, cameraGlobal;
 let canvas, ID 
 let scroll = 0
+let flagRotation = 0
 const scenes = [];
 const defaultScene = new THREE.Scene();
 const mouse = new THREE.Vector2();
@@ -156,7 +157,7 @@ function render() {
               ((Math.cos(t / 4 + Math.PI / 2 + ((index / 4) * Math.PI) / 2) * Math.PI) /
                 2) *
               0.5 * coef;
-          } else if (obj.type === "Mesh") {
+          } else if (obj.type === "Mesh" && flagRotation) {
             obj.rotation.y =
               ((Math.cos(t / 4 + Math.PI / 2 + ((index / 4) * Math.PI) / 2) * Math.PI / 2) /
                 2) *
