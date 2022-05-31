@@ -97,7 +97,7 @@ const { pending, data: folderData, refresh, error } = useLazyAsyncData("folderDa
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",      
+      "Access-Control-Allow-Origin": "*",
     },
     params: {
       page: page.value,
@@ -196,17 +196,25 @@ function closePhotoModal() {
 // Function to handle the click on the next button in the modal
 function nextPhoto() {
   const index = folderData.value.images.data.indexOf(photoDisplayed.value);
-  photoDisplayed.value =
-    folderData.value.images.data[(index + 1) % folderData.value.images.data.length];
+  if (index < folderData.value.images.data.length - 1) {
+    photoDisplayed.value = folderData.value.images.data[index + 1];
+  } else {
+    // Fetch the next page and display the first image
+    nextPage();
+    photoDisplayed.value = folderData.value.images.data[0];
+}
 }
 
 // Function to handle the click on the next button in the modal
 function previousPhoto() {
   const index = folderData.value.images.data.indexOf(photoDisplayed.value);
-  photoDisplayed.value =
-    folderData.value.images.data[
-      index - 1 < 0 ? folderData.value.images.data.length - 1 : index - 1
-    ];
+  if (index > 0) {
+    photoDisplayed.value = folderData.value.images.data[index - 1];
+  } else {
+    // Fetch the previous page and display the last image
+    previousPage();
+    photoDisplayed.value = folderData.value.images.data[folderData.value.images.data.length - 1];
+  }
 }
 
 function fullscreen() {
