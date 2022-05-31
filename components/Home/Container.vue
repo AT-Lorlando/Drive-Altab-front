@@ -200,8 +200,7 @@ function nextPhoto() {
     photoDisplayed.value = folderData.value.images.data[index + 1];
   } else {
     // Fetch the next page and display the first image
-    page.value < lastPage.value ? (page.value += 1) : (page.value = 1);
-    refresh();
+    nextPage();
     photoDisplayed.value = folderData.value.images.data[0];
 }
 }
@@ -213,8 +212,7 @@ function previousPhoto() {
     photoDisplayed.value = folderData.value.images.data[index - 1];
   } else {
     // Fetch the previous page and display the last image
-    page.value > 1 ? (page.value--) : (page.value = lastPage.value);
-    refresh()
+    previousPage();
     photoDisplayed.value = folderData.value.images.data[folderData.value.images.data.length - 1];
   }
 }
