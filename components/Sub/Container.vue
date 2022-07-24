@@ -88,7 +88,7 @@ function folderMesh(f) {
     const cube = new THREE.Group();
     for (let i = 0; i < 6; i++) {
       let j = i % f.cover.length
-      const new_texture = new THREE.TextureLoader().load(`{f.cover[j].data.breakpoints.small.url}`,fixTexture(1, 1));
+      const new_texture = new THREE.TextureLoader().load(`${f.cover[j].data.breakpoints.small.url}`,fixTexture(1, 1));
       new_texture.wrapS = THREE.ClampToEdgeWrapping;
       new_texture.wrapT = THREE.RepeatWrapping;
       const new_material = new THREE.MeshBasicMaterial({
@@ -109,7 +109,7 @@ function folderMesh(f) {
     return cube;
   } else {
     // Add a plane facing the camera
-    const new_texture = new THREE.TextureLoader().load(`{f.data.breakpoints.small.url}`,fixTexture(1, 1));
+    const new_texture = new THREE.TextureLoader().load(`${f.data.breakpoints.small.url}`,fixTexture(1, 1));
     new_texture.wrapS = THREE.ClampToEdgeWrapping;
     new_texture.wrapT = THREE.RepeatWrapping;
     const new_material = new THREE.MeshBasicMaterial({
