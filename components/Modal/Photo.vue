@@ -1,38 +1,38 @@
 <template>
   <div
-    class="fixed xl:absolute xl:mt-20 z-20 w-full h-full xl:h-4/6 flex flex-col xl:flex-row text-white justify-between items-center"
+    class="fixed z-20 flex flex-col items-center justify-between w-full h-full text-white xl:absolute xl:mt-20 xl:h-4/6 xl:flex-row"
   >
     <div v-if="isMobile" class="w-1/3 h-full p-4">
       <h1 class="text-3xl">Informations sur la photo</h1>
-      <div class="flex flex-col space-y-1 m-4">
-        <div v-for="i in informations" class="flex flex-row w-1/2 justify-between">
-          <p class="text-xl text-center pb-1">{{ i.name }}:</p>
-          <p class="text-xl text-center pb-1">{{ i.value }}</p>
+      <div class="flex flex-col m-4 space-y-1">
+        <div v-for="i in informations" class="flex flex-row justify-between w-1/2">
+          <p class="pb-1 text-xl text-center">{{ i.name }}:</p>
+          <p class="pb-1 text-xl text-center">{{ i.value }}</p>
         </div>
       </div>
     </div>
     <div v-else class="w-4/5 p-4 mt-10">
       <h1 class="text-base">Informations sur la photo:</h1>
       <div class="grid grid-cols-2 space-y-1">
-        <div v-for="i in informations" class="flex flex-row w-1/2 justify-between">
-          <p class="text-sm text-center pb-1">{{ i.name }}:</p>
-          <p class="text-sm text-center pb-1">{{ i.value }}</p>
+        <div v-for="i in informations" class="flex flex-row justify-between w-1/2">
+          <p class="pb-1 text-sm text-center">{{ i.name }}:</p>
+          <p class="pb-1 text-sm text-center">{{ i.value }}</p>
         </div>
       </div>
     </div>
-    <div v-if="isMobile" class="flex flex-row w-1/3 justify-between px-4 h-full">
+    <div v-if="isMobile" class="flex flex-row justify-between w-1/3 h-full px-4">
       <button class="bg-transparent" @click="previous">
         <IconsLeftArrow class="icons" />
       </button>
       <button
-        class="bg-transparent w-full h-full hover:cursor-pointer"
+        class="w-full h-full bg-transparent hover:cursor-pointer"
         @click="fullscreen"
       ></button>
       <button class="bg-transparent" @click="next">
         <IconsRightArrow class="icons" />
       </button>
     </div>
-    <div v-if="isMobile" class="w-1/3 h-auto px-4 pl-20 space-y-8 my-auto flex flex-col">
+    <div v-if="isMobile" class="flex flex-col w-1/3 h-auto px-4 pl-20 my-auto space-y-8">
       <AltabButton :click="download" Title="Télécharger" Color="black" Size="large" />
       <AltabButton
         Type="link"
@@ -60,7 +60,7 @@
         biTitle="Page suivante"
       />
     </div>
-    <div v-else class="fixed left-0 bottom-0 w-full h-auto flex flex-col space-y-2 mb-2 text-sm">
+    <div v-else class="fixed bottom-0 left-0 flex flex-col w-full h-auto mb-2 space-y-2 text-sm">
       <AltabButton
         Type="bibutton"
         :click="previous"
@@ -93,12 +93,12 @@
 
     <div
       v-if="showFullscreen"
-      class="fixed z-30 flex flex-col w-full h-full items-center justify-center bg-white bg-opacity-20"
+      class="fixed z-30 flex flex-col items-center justify-center w-full h-full bg-white bg-opacity-20"
     >
       <div class="absolute self-center">
         <img
-          :src="`${baseURL}${photo.data.url}`"
-          class="object-scale-down rounded-xl max-w-screen-xl max-h-screen shadow-lg border-white border-2 bg-blend-luminosity"
+          :src="`${photo.data.url}`"
+          class="object-scale-down max-w-screen-xl max-h-screen border-2 border-white shadow-lg rounded-xl bg-blend-luminosity"
         />
         <IconsExit
           class="absolute top-0 right-0 m-8 hover:cursor-pointer"
@@ -179,7 +179,7 @@ function setPhoto(photo) {
       value: photo.data.format,
     },
   ];
-  fullsize.value = `${baseURL}${photo.data.url}`
+  fullsize.value = `${photo.data.url}`
 }
 const isMobile = inject("isMobile");
 
