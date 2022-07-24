@@ -88,7 +88,7 @@ function folderMesh(f) {
     const cube = new THREE.Group();
     for (let i = 0; i < 6; i++) {
       let j = i % f.cover.length
-      const new_texture = new THREE.TextureLoader().load(`${baseURL}${f.cover[j].data.breakpoints.small.url}`,fixTexture(1, 1));
+      const new_texture = new THREE.TextureLoader().load(`{f.cover[j].data.breakpoints.small.url}`,fixTexture(1, 1));
       new_texture.wrapS = THREE.ClampToEdgeWrapping;
       new_texture.wrapT = THREE.RepeatWrapping;
       const new_material = new THREE.MeshBasicMaterial({
@@ -109,7 +109,7 @@ function folderMesh(f) {
     return cube;
   } else {
     // Add a plane facing the camera
-    const new_texture = new THREE.TextureLoader().load(`${baseURL}${f.data.breakpoints.small.url}`,fixTexture(1, 1));
+    const new_texture = new THREE.TextureLoader().load(`{f.data.breakpoints.small.url}`,fixTexture(1, 1));
     new_texture.wrapS = THREE.ClampToEdgeWrapping;
     new_texture.wrapT = THREE.RepeatWrapping;
     const new_material = new THREE.MeshBasicMaterial({
@@ -284,9 +284,9 @@ onUnmounted(() => {
 <template>
   <ul
     id="folderDisplay"
-    class="grid xl:grid-cols-5 xl:pt-8 grid-cols-1 overflow-y-auto w-full h-screen xl:h-full mt-16 px-12 pb-48 xl:pb-0 bg-primary-dark"
+    class="grid w-full h-screen grid-cols-1 px-12 pb-48 mt-16 overflow-y-auto xl:grid-cols-5 xl:pt-8 xl:h-full xl:pb-0 bg-primary-dark"
   >
-    <li v-for="(f,index) in props.folder" @click="onClick(f, index)" class="text-white text-xl z-0 hover:cursor-pointer w-full h-auto">
+    <li v-for="(f,index) in props.folder" @click="onClick(f, index)" class="z-0 w-full h-auto text-xl text-white hover:cursor-pointer">
       <div :id="`scene${index}`" class="flex flex-col items-center w-60 h-60 sm:w-60 sm:h-60 xl:w-80 xl:h-80 2xl:w-100 2xl:h-100">
         <h1 class="text-xl">
           {{f.name || f.title}}
