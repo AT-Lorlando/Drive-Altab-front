@@ -1,6 +1,6 @@
 <template>
-    <div class="bg-primary-dark flex flex-col text-white text-xl z-20 mt-10  xl:mt-20">
-        <div class="w-4/5 xl:w-2/5 self-center pl-8 xl:pl-0 items-center flex flex-col text-center space-y-10 overscroll-y-auto">
+    <div class="z-20 flex flex-col mt-10 overflow-y-auto text-xl text-white bg-primary-dark xl:mt-20 xl:pb-10">
+        <div class="flex flex-col items-center self-center w-4/5 pl-8 space-y-10 text-center xl:w-2/5 xl:pl-0">
             <h2>
             Exemple de retouche
             </h2>

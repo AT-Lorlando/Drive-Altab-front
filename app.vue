@@ -3,3 +3,10 @@
     <NuxtPage />
   </NuxtLayout>  
 </template>
+
+<!-- Setup -->
+<script setup>
+useHead({
+  title: 'Altab Drive'
+})
+</script>

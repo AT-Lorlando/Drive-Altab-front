@@ -21,6 +21,21 @@ const props = defineProps({
   },
 });
 
+function slide_exemple(t, tmax) {    
+    if(t < tmax) {
+        if ( t > tmax / 2 ) {
+            slider.value.value = 500 - (t - tmax) 
+        } else {
+            slider.value.value = 500 + t
+        }
+        const width = slider.value.value;
+        img2.value.style.width = width/10 + '%';
+        setTimeout(() => {
+            slide_exemple(t+10, tmax)
+        }, 10)
+    }
+}
+
 onMounted(()=> {
     img1.value.style.backgroundImage = `url('${props.img1}')`
     img2.value.style.backgroundImage = `url('${props.img2}')`
@@ -29,6 +44,7 @@ onMounted(()=> {
         img2.value.style.width = width/10 + '%';
     })
 
+    slide_exemple(0,1000)
 })
 </script>
 <style scoped>
